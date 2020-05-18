@@ -1,15 +1,16 @@
 import React from 'react';
+import Login from './components/Login'
 
-function App() {
-  return (
-    <div className="App">
-      <div className="text-center my-2">
-        <h1 className="text-primary">Betalife</h1>
-        <p className="text-secondary"> This app matches users with existing opportunities in skill training </p>
-        <p> -------- Edit this UI ------- </p>
+class App extends React.Component {
+
+  render() {
+    return (
+      <div>
+        <Login/>
       </div>
-    </div>
-  );
+    );
+  }
+
 }
 
 export default App;
