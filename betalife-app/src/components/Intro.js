@@ -1,10 +1,9 @@
-import React, { Fragment } from 'react';
+import React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"
-import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink, MDBContainer, MDBMask, MDBView, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter, MDBInput, MDBFormInline, MDBDatePickerV5 } from 'mdbreact';
-import { BrowserRouter as Router } from 'react-router-dom';
-import loginBg from '../images/buildings.jpg'
-import Signup from './Signup'
+import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink, MDBContainer, MDBMask, MDBView, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput, MDBFormInline} from "mdbreact";
+import { BrowserRouter as Router } from "react-router-dom";
+import loginBg from "../images/buildings.jpg";
 
 class Intro extends React.Component {
   constructor(props) {
@@ -15,9 +14,8 @@ class Intro extends React.Component {
       modal2: false,
       modal3: false,
       modal4: false,
-      modal5: false,
       radio: 2,
-      birthDate: new Date()
+      startDate: new Date()
     };
     this.doCollapse = this.doCollapse.bind(this);
   }
@@ -28,22 +26,33 @@ class Intro extends React.Component {
     });
   }
 
-  toggle = nr => () => {
-    let modalNumber = 'modal' + nr
-    this.setState({
-      [modalNumber]: !this.state[modalNumber]
-    });
+  toggle = (nr) => () => {
+    if (nr === 2) {
+      this.setState({
+        modal2: !this.state.modal2
+      });
+    }
+    else if (nr === 3){
+      this.setState({
+      modal3: !this.state.modal3
+      });
+    }
+    else if (nr === 4){
+      this.setState({
+        modal4: !this.state.modal4
+      });
+    }
   }
 
-  handleRadio = nr => () => {
+  handleRadio = (nr) => () => {
     this.setState({
       radio: nr
     });
   }
 
-  handleBirth = date => {
+  handleBirth = (date) => {
     this.setState({
-      birthDate: date
+      startDate: date
     });
   }
 
@@ -67,6 +76,41 @@ class Intro extends React.Component {
                   </MDBNavItem>
                   <MDBNavItem>
                     <MDBNavLink to="#">Contact</MDBNavLink>
+                  </MDBNavItem>
+                  <MDBNavItem>
+                    <MDBNavLink to="#" onClick={this.toggle(4)}>Portal</MDBNavLink>
+
+                    <MDBModal isOpen={this.state.modal4} toggle={this.toggle(4)} size="md" cascading>
+                      <MDBModalHeader
+                        toggle={this.toggle(4)}
+                        titleClass="d-inline title"
+                        className="text-center light-blue darken-3 white-text"
+                      >
+                        <MDBIcon icon="pencil-alt" className="px-3" />
+                        Admin Login
+                      </MDBModalHeader>
+                      <MDBModalBody>
+                        <MDBInput label="Your email"
+                          type="email"
+                        />
+                        <MDBInput
+                          label="Your password"
+                          type="password"
+                          iconClass="dark-grey"
+                        />
+                        <div className="text-center mt-1-half">
+                          <MDBBtn
+                            color="info"
+                            className="mb-2"
+                            onClick={this.toggle(4)}
+                          >
+                            login
+                            <MDBIcon icon="paper-plane" className="ml-1" />
+                          </MDBBtn>
+                        </div>
+                      </MDBModalBody>
+                    </MDBModal>
+
                   </MDBNavItem>
                 </MDBNavbarNav>
                 <MDBNavbarNav right>
@@ -159,18 +203,18 @@ class Intro extends React.Component {
                       <MDBInput
                         onClick={this.handleRadio(1)}
                         checked={this.state.radio === 1 ? true : false}
-                        label='Male'
-                        type='radio'
-                        id='radio1'
-                        containerClass='mr-5'
+                        label="Male"
+                        type="radio"
+                        id="radio1"
+                        containerClass="mr-5"
                       />
                       <MDBInput
                         onClick={this.handleRadio(2)}
                         checked={this.state.radio === 2 ? true : false}
-                        label='Female'
-                        type='radio'
-                        id='radio2'
-                        containerClass='mr-5'
+                        label="Female"
+                        type="radio"
+                        id="radio2"
+                        containerClass="mr-5"
                       />
                     </MDBFormInline>
 
@@ -183,7 +227,7 @@ class Intro extends React.Component {
                     <MDBFormInline className="my-4">
                       <label className="mr-2">Date of birth</label>
                       <DatePicker className="border border-0 border-dark"
-                        selected={this.state.birthDate}
+                        selected={this.state.startDate}
                         omChange={this.handleBirth}
                       />
                     </MDBFormInline>
@@ -259,14 +303,6 @@ class Intro extends React.Component {
             </MDBMask>
           </MDBView>
         </header>
-
-
-        {/* I left the following in case you need this in your componemt. Just copy and edit.
-          <main>
-          <MDBContainer className="text-center my-5">
-            <p align="justify"> Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-          </MDBContainer>
-        </main> */}
       </div>
     );
   }
