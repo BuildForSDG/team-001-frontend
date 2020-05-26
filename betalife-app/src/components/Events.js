@@ -36,7 +36,7 @@ class Events extends Component {
     const {events} = this.state
     return (
       <div>
-        <div className="row mt-4 pt-4">
+        <div className="row mt-4 pt-5">
           <div className="col-12 mb-4">
             <h1 className="text-center float-left">All Events</h1>
             <Link to="" className="btn btn-light btn-sm float-right"> filter </Link>
