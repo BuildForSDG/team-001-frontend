@@ -145,7 +145,8 @@ class Events extends Component {
         </MDBRow>
 
       </div>
-    )};
+    );
+  }
   }
 
         export default Events;
