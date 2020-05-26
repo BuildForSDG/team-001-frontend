@@ -11,7 +11,7 @@ class Events extends Component {
     super(props);
     this.state = {
       events: []
-    }
+    };
   }
 
   componentDidMount() {
@@ -23,8 +23,8 @@ class Events extends Component {
   }
 
   handleHome= (e) => {
-    e.preventDefault()
-    this.props.history.push("/App")
+    e.preventDefault();
+    this.props.history.push("/App");
   }
 
 
@@ -33,7 +33,7 @@ class Events extends Component {
   }
 
   render(){
-    const {events} = this.state
+    // const {events} = this.state;
     return (
       <div>
         <div className="row mt-4 pt-5">
@@ -143,6 +143,6 @@ class Events extends Component {
         </MDBRow>
 
       </div>
-        )}}
+    )}};
 
         export default Events;

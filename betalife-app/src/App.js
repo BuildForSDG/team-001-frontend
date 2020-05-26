@@ -75,7 +75,7 @@ class App extends Component {
   }
 
   handleSponsor = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     this.setState({ org: true });
   }
 
