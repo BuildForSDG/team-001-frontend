@@ -75,7 +75,7 @@ class App extends Component {
   }
 
   handleSponsor = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     this.setState({ org: true });
   }
 
@@ -259,7 +259,7 @@ class App extends Component {
 
                         <MDBFormInline className="my-4">
                           <label className="mr-2">Date of birth</label>
-                          <DatePicker className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey"
+                          <DatePicker className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
                             selected={this.state.startDate}
                             omChange={this.handleBirth}
                           />
