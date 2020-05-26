@@ -6,6 +6,8 @@ import bgFashion from "../images/butterfly_bg.jpg";
 
 import { MDBCard, MDBCardTitle, MDBBtn, MDBRow, MDBCol, MDBIcon } from "mdbreact";
 
+// initial Events UI
+
 class Events extends Component {
   constructor(props) {
     super(props);
