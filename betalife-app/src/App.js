@@ -164,7 +164,7 @@ class App extends Component {
                               this.setState({
                                 modal4: false,
                                 collapse: false
-                              })
+                              });
                             }}
                           >
                             login

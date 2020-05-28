@@ -43,7 +43,6 @@ class Events extends Component {
         modal1: !this.state.modal1
       });
     }
-    else {}
   }
 
   render(){
