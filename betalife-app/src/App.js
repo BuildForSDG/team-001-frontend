@@ -55,7 +55,6 @@ class App extends Component {
       });
       this.doCollapse();
     }
-    else {}
   }
 
   handleRadio = (nr) => () => {
@@ -135,7 +134,7 @@ class App extends Component {
                       // this.toggle(4);
                       this.setState({
                         modal4: true
-                      })
+                      });
                     }}
                     >Portal</MDBNavLink>
 

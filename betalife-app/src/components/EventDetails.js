@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-
+// for later possible use
 class EventDetails extends Component {
 
   render() {
