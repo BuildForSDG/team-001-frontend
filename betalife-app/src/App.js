@@ -1,4 +1,5 @@
-import React, { Component } from "react";import { BrowserRouter as Router , Route, Switch, Redirect, Link } from "react-router-dom";
+import React, { Component } from "react";
+import { BrowserRouter as Router , Route, Switch, Redirect, Link } from "react-router-dom";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -6,26 +7,36 @@ import "react-datepicker/dist/react-datepicker.css";
 import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink, MDBContainer, MDBMask, MDBView, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput, MDBFormInline} from "mdbreact";
 
 import Events from "./components/Events";
-
-import loginBg from "./images/buildings.jpg";
+import Profile from "./components/Profile";
+import Signup from "./components/Signup";
+import Header from "./components/Header";
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      collapse: false,
-      isWideEnough: false,
-      modal2: false,
-      modal3: false,
-      modal4: false,
-      radio: 2,
-      startDate: new Date(),
-      org: false,
-      showLogin: "d-block",
-      showEvents: "d-none"
-    };
-    this.doCollapse = this.doCollapse.bind(this);
-    this.handleEvent = this.handleEvent.bind(this);
+
+    const data = localStorage.getItem("currentState");
+    if(data){
+      this.state = JSON.parse(data);
+    }
+    else {
+      this.state = {
+        collapse: false,
+        isWideEnough: false,
+        modal2: false,
+        modal3: false,
+        modal4: false,
+        radio: 2,
+        startDate: new Date(),
+        org: false,
+        showSignupPg: "d-block",
+        showEventPg: "d-none",
+        loggedIn: false,
+        redirect: null,
+        showContent: false
+      };
+    }
+    this.handleDisplay = this.handleDisplay.bind(this);
   }
 
   doCollapse() {
@@ -69,32 +80,50 @@ class App extends Component {
     });
   }
 
-  handleTrainee = (event) => {
-    event.preventDefault();
-    this.setState({ org: false });
+  handleDisplay = () => {
+    // localStorage.setItem("currentState", JSON.stringify(this.state));
+    // localStorage.clear();
+    // this.setState({
+    //   // showEventPg: "d-block",
+    //   // showSignupPg: "d-none",
+    // });
+    this.doCollapse();
   }
 
-  handleOrganizer = (event) => {
-    event.preventDefault();
-    this.setState({ org: true });
-  }
-
-  handleSponsor = (event) => {
-    event.preventDefault();
-    this.setState({ org: true });
-  }
-
-  handleEvent = () => {
+  handleLogin = (e) => {
+    e.preventDefault();
+    // localStorage.setItem("currentState", JSON.stringify(this.state));
+    // localStorage.clear();
     this.setState({
-      showEvents: "d-block",
-      showLogin: "d-none"
+      loggedIn: true,
+      modal4: false,
+      collapse: false
     });
     this.doCollapse();
   }
 
+  handleLogout = (e) => {
+    e.preventDefault();
+    this.setState({
+      // loggedIn: false,
+      // // showEventPg: "d-block",
+      // // showSignupPg: "d-none",
+      // redirect: "/Signup"
+    });
+    // localStorage.setItem("currentState", JSON.stringify(this.state));
+    this.doCollapse();
+    if(this.state.redirect){
+    return <Redirect to={this.state.redirect} />
+    }
+    return(
+      <Signup />
+    )
+    // this.props.history.push("/")
+  }
+
   closeNav = (e) => {
     // e.preventDefault();
-    if (this.state.coollapse === true) {
+    if (this.state.collapse === true) {
       this.setState({
         collapse: false
       });
@@ -105,297 +134,45 @@ class App extends Component {
     const { org } = this.state;
     const {showEvent} = this.state;
     const {collapse} = this.state;
+    const {showContent} = this.state
     return (
       <div>
         <Router>
-          <header>
-            <MDBNavbar color="indigo" dark expand="md" scrolling fixed="top">
-              <MDBNavbarBrand href="#" onClick={this.closeNav}>
-                <strong className="font-italic">Betalife</strong>
-              </MDBNavbarBrand>
-              {!this.state.isWideEnough && <MDBNavbarToggler onClick={this.doCollapse} />}
-              <MDBCollapse isOpen={this.state.collapse} navbar>
-                <MDBNavbarNav left>
-                  <MDBNavItem active>
-                    <MDBNavLink to="#">Home</MDBNavLink>
-                  </MDBNavItem>
-                  <MDBNavItem>
-                    <MDBNavLink to="#">About Us</MDBNavLink>
-                  </MDBNavItem>
-                  <MDBNavItem>
-                    <MDBNavLink to="/Events"
-                      onClick={this.handleEvent}>Events</MDBNavLink>
-                  </MDBNavItem>
-                  <MDBNavItem>
-                    <MDBNavLink to="#">Contact</MDBNavLink>
-                  </MDBNavItem>
-                  <MDBNavItem>
-                    <MDBNavLink to="" onClick={() => {
-                      // this.toggle(4);
-                      this.setState({
-                        modal4: true
-                      });
-                    }}
-                    >Portal</MDBNavLink>
+          <Header />
+          <Switch>
+            <Route path="/" render={
+              (props) => {
+                return (
+                  <div>
 
-                    <MDBModal isOpen={this.state.modal4} toggle={this.toggle(4)} size="md" cascading>
-                      <MDBModalHeader
-                        toggle={this.toggle(4)}
-                        titleClass="d-inline title"
-                        className="text-center light-blue darken-3 white-text"
-                      >
-                        <MDBIcon icon="pencil-alt" className="px-3" />
-                        Admin Login
-                      </MDBModalHeader>
-                      <MDBModalBody>
-                        <MDBInput label="Your email"
-                          type="email"
-                        />
-                        <MDBInput
-                          label="Your password"
-                          type="password"
-                          iconClass="dark-grey"
-                        />
-                        <div className="text-center mt-1-half">
-                          <MDBBtn
-                            color="info"
-                            className="mb-2"
-                            onClick={() => {
-                              this.setState({
-                                modal4: false,
-                                collapse: false
-                              });
-                            }}
-                          >
-                            login
-                            <MDBIcon icon="paper-plane" className="ml-1" />
-                          </MDBBtn>
-                        </div>
-                      </MDBModalBody>
-                    </MDBModal>
+                    {localStorage.getItem("currentUser") !== null ? <Redirect to="/Event"/>  :
+                    <Signup /> }
+                  </div>
+                )
+              }
+            } exact />
+            <main>
+              <MDBContainer>
+                <Route
+                  path={"/Events"}
+                  render={props => (
+                    <Events {...props} exact />
+                  )} />
+                <Route
+                  path={"/Profile"}
+                  render={props => (
+                    <Profile {...props} exact />
+                  )} />
+              </MDBContainer>
+            </main>
 
-                  </MDBNavItem>
-                </MDBNavbarNav>
-                <MDBNavbarNav right>
-                  <MDBNavItem>
-                    <MDBNavLink to="#"><MDBIcon fab icon="facebook-f" /></MDBNavLink>
-                  </MDBNavItem>
-                  <MDBNavItem>
-                    <MDBNavLink to="#"><MDBIcon fab icon="twitter" /></MDBNavLink>
-                  </MDBNavItem>
-                  <MDBNavItem>
-                    <MDBNavLink to="#"><MDBIcon fab icon="instagram" /></MDBNavLink>
-                  </MDBNavItem>
-                </MDBNavbarNav>
-              </MDBCollapse>
-            </MDBNavbar>
-
-            { this.state.showLogin !== "d-block" ? null :
-            <MDBView src={loginBg}>
-              <MDBMask overlay="black-light" className="flex-center flex-column text-white text-center">
-
-                <MDBContainer>
-
-                  <p className="my-3">Betalife is a platform that matches users with existing opportunities in skill training. </p>
-
-                  <MDBBtn color="primary" onClick={this.toggle(2)}>
-                    <MDBIcon icon="address-card" className="mr-1" /> Sign up
-                  </MDBBtn>
-
-                  <MDBModal isOpen={this.state.modal2} toggle={this.toggle(2)} size="md" cascading>
-                    <MDBModalHeader
-                      toggle={this.toggle(2)}
-                      titleClass="d-inline title"
-                      className="text-center light-blue darken-3 white-text"
-                    >
-                      <MDBIcon icon="pencil-alt" className="px-3" />
-                      Sign up Form
-                    </MDBModalHeader>
-                    <MDBModalBody className="text-left">
-                      <h3 className="text-center"> Select Role </h3>
-
-
-                      <fragment className="btn-group text-left">
-                        <MDBBtn color="reset-color" className="text-primary mx-0" onClick={this.handleTrainee}>
-                          Trainee
-                          <MDBIcon  icon="diagnoses" className="ml-1" />
-                        </MDBBtn>
-                        <MDBBtn color="reset-color" className="text-primary" onClick={this.handleOrganizer}>
-                          Organizer
-                          <MDBIcon icon="user-tie" className="ml-1" />
-                        </MDBBtn>
-                        <MDBBtn color="reset-color" className="text-primary" onClick={this.handleSponsor}>
-                          Sponsor
-                          <MDBIcon  icon="crown" className="ml-1" />
-                        </MDBBtn>
-                      </fragment>
-
-                      <MDBInput
-                        label="First name"
-                        type="text"
-                        iconClass="dark-grey"
-                      />
-
-                      <MDBInput
-                        label="last name"
-                        type="text"
-                        iconClass="dark-grey"
-                      />
-
-                      {/* hide organization field based on role selected */}
-                      { org !== true ?
-                        <fragment className="d-none">
-                          <MDBInput
-                            label="Organization name"
-                            type="text"
-                            iconClass="dark-grey"
-                          />
-                        </fragment>
-                      :
-                      <fragment>
-                        <MDBInput
-                          label="Organization name"
-                          type="text"
-                          iconClass="dark-grey"
-                        />
-                      </fragment>
-                      }
-
-                      <MDBInput
-                        label="Phone number"
-                        type="number"
-                        iconClass="dark-grey"
-                      />
-
-                      <MDBInput label="Your email"
-                        type="email"
-                      />
-                      <MDBInput
-                        label="Your password"
-                        type="password"
-                        iconClass="dark-grey"
-                      />
-
-                      <MDBInput
-                        className="d-inline"
-                        label="Address"
-                        type="text"
-                        iconClass="dark-grey"
-                      />
-
-                      <MDBFormInline className="my-4">
-                        <label className="mr-2">Date of birth</label>
-                        <DatePicker className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
-                          selected={this.state.startDate}
-                          omChange={this.handleBirth}
-                        />
-                      </MDBFormInline>
-
-                      <fragment className="form-check-inline mb-3">
-                        <label className="mr-5">Sex</label>
-                        <MDBInput
-                          gap
-                          onClick={this.handleRadio(1)}
-                          checked={this.state.radio === 1 ? true : false}
-                          label="Male"
-                          type="radio"
-                          id="radio1"
-                          size="sm"
-                          containerClass="mr-3"
-                        />
-                        <MDBInput
-                          gap
-                          onClick={this.handleRadio(2)}
-                          checked={this.state.radio === 2 ? true : false}
-                          label="Female"
-                          type="radio"
-                          id="radio2"
-                          size="sm"
-                          containerClass="mr-3"
-                        />
-                      </fragment>
-
-                      <div className="input-group mb-4">
-                        <div className="input-group-prepend">
-                          <span className="input-group-text" id="inputGroupFileAddon01">
-                            Upload
-                          </span>
-                        </div>
-                        <div className="custom-file">
-                          <input
-                            type="file"
-                            className="custom-file-input"
-                            id="inputGroupFile01"
-                            aria-describedby="inputGroupFileAddon01"
-                          />
-                          <label className="custom-file-label" htmlFor="inputGroupFile01">
-                            Choose file
-                          </label>
-                        </div>
-                      </div>
-
-                      <div className="text-center mt-1-half">
-                        <MDBBtn
-                          color="info"
-                          className="mb-2"
-                          onClick={this.toggle(2)}
-                        >
-                          Sign up
-                          <MDBIcon icon="paper-plane" className="ml-1" />
-                        </MDBBtn>
-                      </div>
-                    </MDBModalBody>
-                  </MDBModal>
-
-                  <MDBBtn color="light" className="text-primary" onClick={this.toggle(3)}>
-                    Login <MDBIcon icon="address-card" className="ml-1" />
-                  </MDBBtn>
-
-                  <MDBModal isOpen={this.state.modal3} toggle={this.toggle(3)} size="md" cascading>
-                    <MDBModalHeader
-                      toggle={this.toggle(3)}
-                      titleClass="d-inline title"
-                      className="text-center light-blue darken-3 white-text"
-                    >
-                      <MDBIcon icon="pencil-alt" className="px-3" />
-                      Login Form
-                    </MDBModalHeader>
-                    <MDBModalBody>
-                      <MDBInput label="Your email"
-                        type="email"
-                      />
-                      <MDBInput
-                        label="Your password"
-                        type="password"
-                        iconClass="dark-grey"
-                      />
-                      <div className="text-center mt-1-half">
-                        <MDBBtn
-                          color="info"
-                          className="mb-2"
-                          onClick={this.toggle(3)}
-                        >
-                          login
-                          <MDBIcon icon="paper-plane" className="ml-1" />
-                        </MDBBtn>
-                      </div>
-                    </MDBModalBody>
-                  </MDBModal>
-
-                </MDBContainer>
-              </MDBMask>
-            </MDBView>
-            }
-          </header>
-
-          <main>
-            <MDBContainer>
-              { this.state.showEvents === "d-block" ? <Events /> : null }
-            </MDBContainer>
-          </main>
+            <Route
+              path="*"
+              component={()=> "404 ! PAGE NOT FOUND"} />
+          </Switch>
         </Router>
       </div>
-    );
+        );
   }
 }
 

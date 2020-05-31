@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import bgTech from "../images/event_bg1.jpg";
 import bgFashion from "../images/butterfly_bg.jpg";
 
-import { MDBCard, MDBCardTitle, MDBBtn, MDBRow, MDBCol, MDBIcon, MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBModal, MDBModalBody, MDBModalHeader, MDBInput } from "mdbreact";
+import { MDBCard, MDBCardTitle, MDBBtn, MDBRow, MDBCol, MDBIcon, MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBModal, MDBModalBody, MDBModalHeader } from "mdbreact";
+
 
 // initial Events UI
 
@@ -12,7 +13,7 @@ class Events extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      events: [],
+      // events: [],
       modal1: false,
     };
   }
@@ -130,20 +131,21 @@ class Events extends Component {
                       </div>
                       <div className="text-center mt-1-half">
                         <MDBBtn
-                          color="info"
+                          color="primary"
                           className="my-2"
                           onClick={this.toggle(1)}
                         >
+                          <MDBIcon icon="user-check" className="mr-1" />
                           Enrol
-                          <MDBIcon icon="sign-in-alt" className="ml-1" />
+                          {/* <MDBIcon icon="sign-in-alt" className="ml-1" /> */}
                         </MDBBtn>
                         <MDBBtn
-                          color="info"
+                          color="white"
                           className="my-2"
                           onClick={this.toggle(1)}
                         >
                           Sponsor
-                          <MDBIcon  icon="crown" className="ml-1" />
+                          <MDBIcon icon="crown" className="text-primary ml-1" />
                         </MDBBtn>
                       </div>
                     </MDBModalBody>
