@@ -32,9 +32,9 @@ class Events extends Component {
   }
 
 
-  handleViewArticle = (e, eventContainer) => {
-    // handle displaying event details UI
-  }
+  // handleViewArticle = (e, eventContainer) => {
+  //   // handle displaying event details UI
+  // }
 
   // nr represents modal number
   toggle = (nr) => () => {

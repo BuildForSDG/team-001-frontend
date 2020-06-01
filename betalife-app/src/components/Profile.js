@@ -61,7 +61,7 @@ class Profile extends Component {
             <MDBCol md="8">
               <MDBCard testimonial>
                 <MDBCardUp className="indigo lighten-1" />
-                <MDBAvatar className="mx-auto white">
+                <MDBAvatar  className="img-fluid mb-2 white">
                   <img
                     src={photo}
                     alt=""
@@ -71,8 +71,8 @@ class Profile extends Component {
                   <h4 className="card-title">Emana Okoro</h4>
                   <fragment className="btn-group text-center my-2">
                     <MDBBtn color="primary" className="px-3" onClick={this.handleMyEvents}>
-                      <MDBIcon  far icon="calendar-check" className="mr-2" />
                       My Events
+                      <MDBIcon  far icon="calendar-check" className="ml-2" />
                     </MDBBtn>
                     <MDBBtn color="white" className="px-3" onClick={this.handleMyMessages}>
                       My Messages
