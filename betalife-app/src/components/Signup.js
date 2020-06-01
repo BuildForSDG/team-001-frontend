@@ -108,17 +108,17 @@ class Signup extends Component {
                   <h3 className="text-center"> Select Role </h3>
 
                   <fragment className="btn-group text-center">
-                    <MDBBtn color="reset-color" className="text-primary px-1" onClick={this.handleTrainee}>
+                    <MDBBtn color="reset-color" className="text-primary" onClick={this.handleTrainee}>
                       Trainee
-                      <MDBIcon  icon="diagnoses" className="" />
+                      <MDBIcon  icon="diagnoses" className="ml-1" />
                     </MDBBtn>
-                    <MDBBtn color="reset-color" className="text-primary px-1" onClick={this.handleOrganizer}>
+                    <MDBBtn color="reset-color" className="text-primary" onClick={this.handleOrganizer}>
                       Organizer
-                      <MDBIcon icon="user-tie" className="" />
+                      <MDBIcon icon="user-tie" className="ml-1" />
                     </MDBBtn>
-                    <MDBBtn color="reset-color" className="text-primary px-1" onClick={this.handleSponsor}>
+                    <MDBBtn color="reset-color" className="text-primary" onClick={this.handleSponsor}>
                       Sponsor
-                      <MDBIcon  icon="crown" className="" />
+                      <MDBIcon  icon="crown" className="ml-1" />
                     </MDBBtn>
                   </fragment>
 
