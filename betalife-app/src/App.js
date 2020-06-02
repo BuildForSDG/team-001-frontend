@@ -6,10 +6,13 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink, MDBContainer, MDBMask, MDBView, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput, MDBFormInline} from "mdbreact";
 
+import About from "./components/About";
+import Contact from "./components/Contact";
 import Events from "./components/Events";
 import Profile from "./components/Profile";
 import Signup from "./components/Signup";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 class App extends Component {
   constructor(props) {
@@ -154,6 +157,16 @@ class App extends Component {
             <main>
               <MDBContainer>
                 <Route
+                  path={"/About"}
+                  render={props => (
+                    <About {...props} exact />
+                  )} />
+                <Route
+                  path={"/Contact"}
+                  render={props => (
+                    <Contact {...props} exact />
+                  )} />
+                <Route
                   path={"/Events"}
                   render={props => (
                     <Events {...props} exact />
@@ -162,6 +175,11 @@ class App extends Component {
                   path={"/Profile"}
                   render={props => (
                     <Profile {...props} exact />
+                  )} />
+                <Route
+                  path={"/Footer"}
+                  render={props => (
+                    <Footer {...props} exact />
                   )} />
               </MDBContainer>
             </main>

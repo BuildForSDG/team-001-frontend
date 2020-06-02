@@ -105,11 +105,21 @@ class Header extends Component {
   }
 
   closeNav = (e) => {
-    if (this.state.coollapse === true) {
-      this.setState({
-        collapse: false
-      });
-    }
+    e.preventDefault();
+    this.doCollapse();
+    this.props.history.push("/Events");
+  }
+
+  handleAbout = (e) => {
+    e.preventDefault();
+    this.doCollapse();
+    this.props.history.push("/About");
+  }
+
+  handleContact = (e) => {
+    e.preventDefault();
+    this.doCollapse();
+    this.props.history.push("/Contact");
   }
 
   render() {
@@ -124,10 +134,10 @@ class Header extends Component {
             <MDBCollapse isOpen={this.state.collapse} navbar>
               <MDBNavbarNav left>
                 <MDBNavItem active>
-                  <MDBNavLink to="#">Home</MDBNavLink>
+                  <MDBNavLink to="/Events">Home</MDBNavLink>
                 </MDBNavItem>
                 <MDBNavItem>
-                  <MDBNavLink to="#">About Us</MDBNavLink>
+                  <MDBNavLink to="#" onClick={this.handleAbout}>About Us</MDBNavLink>
                 </MDBNavItem>
                 <MDBNavItem>
                   <MDBNavLink to=""
@@ -135,7 +145,7 @@ class Header extends Component {
                   >Events</MDBNavLink>
                 </MDBNavItem>
                 <MDBNavItem>
-                  <MDBNavLink to="#">Contact</MDBNavLink>
+                  <MDBNavLink to="#" onClick={this.handleContact}>Contact</MDBNavLink>
                 </MDBNavItem>
                 <MDBNavItem>
                   <MDBNavLink to="#" onClick={() => {
