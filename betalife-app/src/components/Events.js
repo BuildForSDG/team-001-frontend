@@ -31,7 +31,6 @@ class Events extends Component {
     this.props.history.push("/App");
   }
 
-
   // handleViewArticle = (e, eventContainer) => {
   //   // handle displaying event details UI
   // }
@@ -113,6 +112,7 @@ class Events extends Component {
                       <img src={bgTech} className="img-fluid mb-2" alt="Event detail"
                       />
                       <div className="text-left">
+                        <p><small>Event-id here</small></p>
                         <h4> Event Title </h4>
                         <p className="">Event description goes here.</p>
                         <p>Event date: (event date)</p>
@@ -122,8 +122,8 @@ class Events extends Component {
                         <p> Published
                           <span className="text-muted"> (today at 10:24 am)</span>
                         </p>
-                        <a href="">
-                          <h6> Organizer name (links to profile) </h6>
+                        <a href="/profile">
+                          <h6> Organizer name </h6>
                         </a>
                         <a href="">
                           <small className="pb-2">Give feedback on this event</small>

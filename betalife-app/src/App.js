@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router , Route, Switch, Redirect, Link } from "react-router-dom";
 
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink, MDBContainer, MDBMask, MDBView, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput, MDBFormInline} from "mdbreact";
+import { MDBContainer } from "mdbreact";
 
 import About from "./components/About";
 import Contact from "./components/Contact";
@@ -13,6 +12,8 @@ import Profile from "./components/Profile";
 import Signup from "./components/Signup";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Message from "./components/Message";
+import Announcement from "./components/Announcement";
 
 class App extends Component {
   constructor(props) {
@@ -177,10 +178,21 @@ class App extends Component {
                     <Profile {...props} exact />
                   )} />
                 <Route
+                  path={"/Message"}
+                  render={props => (
+                    <Message {...props} exact />
+                  )} />
+                <Route
+                  path={"/Announcement"}
+                  render={props => (
+                    <Announcement {...props} exact />
+                  )} />
+                <Route
                   path={"/Footer"}
                   render={props => (
                     <Footer {...props} exact />
                   )} />
+                <Footer />
               </MDBContainer>
             </main>
 

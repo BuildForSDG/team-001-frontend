@@ -12,10 +12,9 @@ class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        modal2: false,
-        radio: 2,
-        startDate: new Date(),
-        org: false,
+      modal2: false,
+      radio: 2,
+      startDate: new Date()
     }
 
   }// nr represents modal number
@@ -49,6 +48,7 @@ class Profile extends Component {
   handleMyMessages = (e) => {
     e.preventDefault();
     // handle logic
+    this.props.history.push("/Message");
   }
 
   render() {
@@ -68,18 +68,19 @@ class Profile extends Component {
                   />
                 </MDBAvatar>
                 <MDBCardBody>
-                  <h4 className="card-title">Emana Okoro</h4>
+                  <h4 className="card-title">Emana Okoro </h4>
                   <fragment className="btn-group text-center my-2">
                     <MDBBtn color="primary" className="px-3" onClick={this.handleMyEvents}>
                       My Events
                       <MDBIcon  far icon="calendar-check" className="ml-2" />
                     </MDBBtn>
-                    <MDBBtn color="white" className="px-3" onClick={this.handleMyMessages}>
-                      My Messages
+                    <MDBBtn color="white" className="px-3" href="#" onClick={this.handleMyMessages}>
+                      Messages
                       <MDBIcon icon="comment-alt" className="text-primary ml-2" />
                     </MDBBtn>
                   </fragment>
 
+                  <p><strong>Role</strong>: Trainee</p>
                   <p><strong>Sex</strong>: Female</p>
                   <p><strong>Phone No</strong>: 234806000122</p>
                   <p><strong>Email</strong>: annO@yahoo.com</p>

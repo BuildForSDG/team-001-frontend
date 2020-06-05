@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router , withRouter } from "react-router-dom";
 
-import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput } from "mdbreact";
-
-// import Events from "./Events";
+import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput, MDBBadge } from "mdbreact";
 
 class Header extends Component {
   constructor(props) {
@@ -122,6 +120,12 @@ class Header extends Component {
     this.props.history.push("/Contact");
   }
 
+  handleAnnouncement = (e) => {
+    e.preventDefault();
+    this.doCollapse();
+    this.props.history.push("/Announcement")
+  }
+
   render() {
     return (
       <div>
@@ -190,18 +194,23 @@ class Header extends Component {
                 </MDBNavItem>
               </MDBNavbarNav>
               <MDBNavbarNav right>
-                <MDBNavItem>
-                  <MDBNavLink to="#"><MDBIcon fab icon="facebook-f" /></MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink to="#"><MDBIcon fab icon="twitter" /></MDBNavLink>
-                </MDBNavItem>
                 {/* <MDBNavItem>
+                  <MDBNavLink to="#"><MDBIcon fab icon="facebook-f" /></MDBNavLink>
+                  </MDBNavItem>
+                  <MDBNavItem>
+                  <MDBNavLink to="#"><MDBIcon fab icon="twitter" /></MDBNavLink>
+                  </MDBNavItem>
+                  <MDBNavItem>
                   <MDBNavLink to="#"><MDBIcon fab icon="instagram" /></MDBNavLink>
                 </MDBNavItem> */}
                 <MDBNavItem>
                   { this.state.loggedIn === true ?
                     <MDBNavbarNav>
+                      <MDBNavItem>
+                        <MDBNavLink to="#" onClick={this.handleAnnouncement}><MDBIcon far icon="bell" />
+                          <MDBBadge color="danger" className="ml-1">3</MDBBadge>
+                        </MDBNavLink>
+                      </MDBNavItem>
                       <MDBNavItem>
                         <MDBNavLink to="#" onClick={this.handleProfile}><MDBIcon far icon="user" />
                         </MDBNavLink>
