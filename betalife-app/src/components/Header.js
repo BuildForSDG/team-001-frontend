@@ -123,7 +123,7 @@ class Header extends Component {
   handleAnnouncement = (e) => {
     e.preventDefault();
     this.doCollapse();
-    this.props.history.push("/Announcement")
+    this.props.history.push("/Announcement");
   }
 
   render() {

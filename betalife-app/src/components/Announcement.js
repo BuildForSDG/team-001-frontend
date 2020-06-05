@@ -32,32 +32,43 @@ class Announcement extends Component {
     return (
       <div>
         <MDBRow className="mt-5">
-          <MDBCol md="12" className="mx-auto mt-5 mb-2">
+          <MDBCol sm="10" className="mx-auto mt-5 mb-2">
             <MDBCard>
-              <MDBRow className="">
-                <MDBCol sm="6" className="float-left ml-3 py-2">
-                  <MDBCardTitle tag="h3" className="">
-                    Announcement
-                  </MDBCardTitle>
-                </MDBCol>
-                <MDBCol className="">
-                  <MDBBtn color="primary" className="px-2"  onClick={this.toggle(2)}>
+              <MDBCol sm="12" className="float-left ml-3 py-2">
+                <MDBCardTitle tag="h3" className="float-left">
+                  Announcement
+                </MDBCardTitle>
+                <MDBCol sm="4" className="mr-1 float-right">
+                  <MDBBtn color="primary" className="px-2 "  onClick={this.toggle(2)}>
                     New
-                    <MDBIcon far icon="bell" className="ml-2" />
+                    <MDBIcon far icon="bell" className="ml-1" />
                   </MDBBtn>
-                </MDBCol>
-                <MDBCol>
-                  <MDBDropdown dropleft>
+                  <MDBDropdown dropleft className="ml-1 float-right">
                     <MDBDropdownToggle caret color="white" className="">
                       <MDBIcon icon="sliders-h" className="mr-1" />
                     </MDBDropdownToggle>
-                    <MDBDropdownMenu  basic>
+                    <MDBDropdownMenu  basic className="">
                       <MDBDropdownItem header>Filter by</MDBDropdownItem>
                       <MDBDropdownItem>Category</MDBDropdownItem>
                       <MDBDropdownItem>Location</MDBDropdownItem>
                     </MDBDropdownMenu>
                   </MDBDropdown>
                 </MDBCol>
+              </MDBCol>
+              <MDBRow className="inline">
+
+                {/* <MDBCol sm="5" className="mx-2 float-right">
+                  <MDBDropdown dropleft className="ml-1">
+                    <MDBDropdownToggle caret color="white" className="">
+                  <MDBIcon icon="sliders-h" className="mr-1" />
+                    </MDBDropdownToggle>
+                    <MDBDropdownMenu  basic>
+                  <MDBDropdownItem header>Filter by</MDBDropdownItem>
+                  <MDBDropdownItem>Category</MDBDropdownItem>
+                  <MDBDropdownItem>Location</MDBDropdownItem>
+                    </MDBDropdownMenu>
+                  </MDBDropdown>
+                </MDBCol> */}
               </MDBRow>
 
               <MDBCardBody>
