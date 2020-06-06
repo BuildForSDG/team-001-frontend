@@ -25,10 +25,9 @@ class About extends Component {
                   <ul className="list-unstyled">
                     <li><small>Victor Okpon</small></li>
                     <li><small>Ochuko Ekressa</small></li>
-                    <li><small>Ololaa Douglas</small></li>
-                    <li><small>Ganiyu Kazeem</small></li>
+                    <li><small>Okolaa Douglas</small></li>
                   </ul>
-                  <small> You can reach us on xxx@email.com </small>
+                  <small> For enquiries, you can reach us on vikzy2rhyme@yahoo.com </small>
                 </p>
               </MDBCol>
               <MDBCol md="2"/>
