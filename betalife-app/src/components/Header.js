@@ -81,6 +81,17 @@ class Header extends Component {
     this.props.history.push("/profile");
   }
 
+  handleAdminLogin = (e) => {
+    e.preventDefault();
+    this.setState({
+      loggedIn: true,
+      modal4: false,
+      collapse: false
+    });
+    this.doCollapse();
+    this.props.history.push("/Dashboard");
+  }
+
   handleLogin = (e) => {
     e.preventDefault();
     this.setState({
@@ -182,7 +193,7 @@ class Header extends Component {
                         <MDBBtn
                           color="info"
                           className="mb-2"
-                          onClick={this.handleLogin}
+                          onClick={this.handleAdminLogin}
                         >
                           login
                           <MDBIcon icon="paper-plane" className="ml-1" />
