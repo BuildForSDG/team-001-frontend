@@ -39,6 +39,7 @@ class Contact extends Component {
             </MDBRow>
           </MDBContainer>
         </div>
+        <Footer />
       </div>
     );
   }
