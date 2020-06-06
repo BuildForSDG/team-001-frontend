@@ -10,7 +10,7 @@ import Announcement from "./Announcement";
       activeItem: "1"
     };
 
-    toggle = tab => e => {
+    toggle = (tab) => (e) => {
       if (this.state.activeItem !== tab) {
         this.setState({
           activeItem: tab

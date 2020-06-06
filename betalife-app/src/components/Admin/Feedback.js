@@ -12,7 +12,7 @@ const data = [
   ["s017", "Elisa Gallagher", "Portica", "United Kingdom", "Is this organizer with userId o331 duely registered ?"]
 ];
 
-const Feedback = props => {
+const Feedback = (props) => {
   return (
     <MDBCard>
       <MDBCardHeader tag="h3" className="text-center font-weight-bold text-uppercase py-4">

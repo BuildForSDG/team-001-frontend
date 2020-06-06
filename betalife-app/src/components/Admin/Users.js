@@ -16,7 +16,7 @@ export default function Users() {
       },
       {
         label: "First Name",
-        field: "first_name",
+        field: "firstName",
         width: 70,
         attributes: {
           "aria-controls": "DataTable",
@@ -25,7 +25,7 @@ export default function Users() {
       },
       {
         label: "Last Name",
-        field: "last_name",
+        field: "lastName",
         width: 80,
       },
       {
@@ -60,8 +60,8 @@ export default function Users() {
     rows: [
       {
         userid: "t001",
-        first_name: "Emeka",
-        last_name: "Nixxon",
+        firstName: "Emeka",
+        lastName: "Nixxon",
         role: "Trainee",
         location: "Lagos",
         enabled: "yes",
@@ -70,8 +70,8 @@ export default function Users() {
       },
       {
         userid: "t002",
-        first_name: "Bimbo",
-        last_name: "Winters",
+        firstName: "Bimbo",
+        lastName: "Winters",
         role: "Trainee",
         location: "Lagos",
         enabled: "no",
@@ -80,8 +80,8 @@ export default function Users() {
       },
       {
         userid: "u003",
-        first_name: "Akpan",
-        last_name: "Udo",
+        firstName: "Akpan",
+        lastName: "Udo",
         role: "Sponsor",
         location: "Uyo",
         enabled: "yes",
@@ -90,8 +90,8 @@ export default function Users() {
       },
       {
         userid: "o004",
-        first_name: "Cedric",
-        last_name: "Kelly",
+        firstName: "Cedric",
+        lastName: "Kelly",
         role: "Organizer",
         location: "Port Harcourt",
         enabled: "yes",
@@ -100,8 +100,8 @@ export default function Users() {
       },
       {
         userid: "t005",
-        first_name: "Davidson",
-        last_name: "Davidson",
+        firstName: "Davidson",
+        lastName: "Davidson",
         role: "Trainee",
         location: "Abuja",
         enabled: "yes",
@@ -110,8 +110,8 @@ export default function Users() {
       },
       {
         userid: "t006",
-        first_name: "Colleen",
-        last_name: "Hurst",
+        firstName: "Colleen",
+        lastName: "Hurst",
         role: "Trainee",
         location: "Lagos",
         enabled: "yes",
@@ -120,8 +120,8 @@ export default function Users() {
       },
       {
         userid: "o007",
-        first_name: "Sonya",
-        last_name: "Frost",
+        firstName: "Sonya",
+        lastName: "Frost",
         role: "Organizer",
         location: "Edinburgh",
         enabled: "yes",
@@ -130,8 +130,8 @@ export default function Users() {
       },
       {
         userid: "o008",
-        first_name: "Jena Gaines",
-        last_name: "Gaines",
+        firstName: "Jena Gaines",
+        lastName: "Gaines",
         role: "Organizer",
         location: "London",
         enabled: "yes",
@@ -140,8 +140,8 @@ export default function Users() {
       },
       {
         userid: "s009",
-        first_name: "Quinn",
-        last_name: "Flynn",
+        firstName: "Quinn",
+        lastName: "Flynn",
         role: "Sponsor",
         location: "Edinburgh",
         enabled: "yes",
@@ -150,8 +150,8 @@ export default function Users() {
       },
       {
         userid: "o010",
-        first_name: "Shou",
-        last_name: "Itou",
+        firstName: "Shou",
+        lastName: "Itou",
         role: "Organiser",
         location: "Tokyo",
         enabled: "yes",
@@ -160,8 +160,8 @@ export default function Users() {
       },
       {
         userid: "t011",
-        first_name: "Michelle",
-        last_name: "House",
+        firstName: "Michelle",
+        lastName: "House",
         role: "Trainee",
         location: "Sidney",
         enabled: "yes",
@@ -170,8 +170,8 @@ export default function Users() {
       },
       {
         userid: "t012",
-        first_name: "Donna",
-        last_name: "Snider",
+        firstName: "Donna",
+        lastName: "Snider",
         role: "Trainee",
         location: "New York",
         enabled: "yes",

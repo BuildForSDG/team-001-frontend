@@ -12,7 +12,7 @@ const data = [
   ["035017", "Margret Henshaw", "Organizer", "e77001", "Time for our event has been chnged from 2pm to 4pm on same day. Please note."]
 ];
 
-const Announcement = props => {
+const Announcement = (props) => {
   return (
     <MDBCard>
       <MDBCardHeader tag="h3" className="text-center font-weight-bold text-uppercase py-4">
