@@ -13,6 +13,7 @@ import Signup from "./components/Signup";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Message from "./components/Message";
+import Dashboard from "./components/Admin/Dashboard";
 import Announcement from "./components/Announcement";
 
 class App extends Component {
@@ -187,6 +188,12 @@ class App extends Component {
                   render={props => (
                     <Announcement {...props} exact />
                   )} />
+                <Route
+                  path={"/Dashboard"}
+                  render={props => (
+                    <Dashboard {...props} exact />
+                  )} />
+                <Footer />
                 <Route
                   path={"/Footer"}
                   render={props => (
