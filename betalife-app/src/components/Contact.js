@@ -27,7 +27,7 @@ class Contact extends Component {
                     <MDBInput label="Subject" icon="tag" group type="text" validate error="wrong" success="right" />
                     <MDBInput type="textarea" rows="2" label="Your message" icon="pencil-alt" />
                   </div>
-                  <div className="text-center pb-2">
+                  <div className="text-center pb-2 mb-5">
                     <MDBBtn outline color="primary">
                       Send
                       <MDBIcon far icon="paper-plane" className="ml-2" />

@@ -4,7 +4,7 @@ import { withRouter, Link } from "react-router-dom";
 // import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { MDBCard, MDBCardBody, MDBCardUp, MDBAvatar, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput } from "mdbreact";
+import { MDBCard, MDBCardBody, MDBCardUp, MDBAvatar, MDBCardImage, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput } from "mdbreact";
 
 import photo from "../images/fash_women1.jpg";
 
@@ -60,13 +60,14 @@ class Profile extends Component {
             <MDBCol md="2" />
             <MDBCol md="8">
               <MDBCard testimonial>
-                <MDBCardUp className="indigo lighten-1" />
-                <MDBAvatar  className="img-fluid mb-2 white">
-                  <img
-                    src={photo}
-                    alt=""
-                  />
-                </MDBAvatar>
+                <figure className="figure">
+                  <img src={photo} className="figure-img img-fluid z-depth-1"
+                    alt="" style={{ width: "400px" }} />
+                  <figcaption className="figure-caption text-center">
+                    userid-0021
+                  </figcaption>
+                </figure>
+
                 <MDBCardBody>
                   <h4 className="card-title">Emana Okoro </h4>
                   <fragment className="btn-group text-center my-2">
