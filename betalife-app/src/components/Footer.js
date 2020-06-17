@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { MDBCol, MDBContainer, MDBRow, MDBFooter } from "mdbreact";
+import { MDBContainer, MDBFooter } from "mdbreact";
 
 class Footer extends Component {
 
@@ -8,11 +8,11 @@ class Footer extends Component {
     return (
       <div>
         <MDBFooter color="white" outline
-        expand="md" scrolling className="font-small pt-1 mt-2 fixed-bottom">
+        expand="md" scrolling className="font-small mt-5 fixed-bottom">
 
-          <div className="footer-copyright text-center py-1">
+          <div className="footer-copyright text-center py-1 text-primary">
             <MDBContainer fluid>
-              &copy; {new Date().getFullYear()} Copyright <a href="/events" className="pl-5"> Betalife </a>
+              &copy; {new Date().getFullYear()} Copyright <a href="/events" className="pl-5 text-primary"> Betalife </a>
             </MDBContainer>
           </div>
         </MDBFooter>

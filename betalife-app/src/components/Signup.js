@@ -3,6 +3,7 @@ import { BrowserRouter as Router , Route, Switch, Redirect, Link } from "react-r
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import axios from "axios";
 
 import { MDBContainer, MDBMask, MDBView, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput, MDBFormInline} from "mdbreact";
 
@@ -21,12 +22,39 @@ class Signup extends Component {
       startDate: new Date(),
       org: false,
       toggleShow: "d-block",
-      toggleHide: "d-none"
+      toggleHide: "d-none",
+      firstName: '',
+      lastName: "",
+      orgName: "",
+      phone: "",
+      email: '',
+      password: '',
+      location: '',
+      doBirth: "",
+      sex: '',
+      photo: ''
     };
   }
+
   doCollapse() {
     this.setState({
       collapse: !this.state.collapse
+    });
+  }
+
+  changeHandler = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
+  signupSubmit = () => {
+    axios.post("https://betalife.herokuapp.com/api/auth/signup", this.state)
+    .then(response => {
+      this.props.history.push("/events");
+    })
+    .catch(error => {
+      console.log(error);
     });
   }
 
@@ -34,11 +62,12 @@ class Signup extends Component {
   toggle = (nr) => (e) => {
     e.preventDefault();
 
+    // sign up submit button
     if (nr === 2) {
       this.setState({
         modal2: !this.state.modal2
       });
-
+      this.signupSubmit();
     }
     else if (nr === 3){
       this.setState({
@@ -79,9 +108,31 @@ class Signup extends Component {
     event.preventDefault();
     this.setState({ org: true });
   }
+  
+  handleLogin = (e) => {
+    e.preventDefault();
+    this.setState({
+      loggedIn: true,
+      modal4: false,
+      collapse: false
+    });
+    this.doCollapse();
+    this.props.history.push("/events");
+  }
 
   render() {
-    const { org } = this.state;
+    const {
+      org,
+      firstName,
+      lastName,
+      orgName,
+      phone,
+      email,
+      password,
+      location,
+      doBirth,
+      sex,
+      photo } = this.state;
     return (
       <div>
         <MDBView src={loginBg}>
@@ -125,60 +176,83 @@ class Signup extends Component {
                   <div className="text-left">
                     <MDBInput
                       label="First name"
+                      name="firstName"
                       type="text"
                       iconClass="dark-grey"
+                      onChange={this.changeHandler}
+                      value={firstName}
                     />
 
                     <MDBInput
                       label="last name"
+                      name="lastName"
                       type="text"
                       iconClass="dark-grey"
+                      onChange={this.changeHandler}
+                      value={lastName}
                     />
-
                     {/* hide organization field based on role selected */}
                     { org !== true ?
                       <fragment className="d-none">
                         <MDBInput
                           label="Organization name"
+                          Name="orgName"
                           type="text"
                           iconClass="dark-grey"
+                          onChange={this.changeHandler}
+                          value={orgName}
                         />
                       </fragment>
                     :
                     <fragment>
                       <MDBInput
                         label="Organization name"
+                        name="orgName"
                         type="text"
                         iconClass="dark-grey"
+                        onChange={this.changeHandler}
+                        value={orgName}
                       />
                     </fragment>
                     }
 
                     <MDBInput
                       label="Phone number"
+                      name="phone"
                       type="number"
                       iconClass="dark-grey"
+                      onChange={this.changeHandler}
+                      value={phone}
                     />
 
-                    <MDBInput label="Your email"
+                    <MDBInput
+                      label="Your email"
+                      name="email"
                       type="email"
+                      onChange={this.changeHandler}
+                      value={email}
                     />
                     <MDBInput
                       label="Your password"
+                      name="password"
                       type="password"
                       iconClass="dark-grey"
+                      onChange={this.changeHandler}
+                      value={password}
                     />
-
                     <MDBInput
                       className="d-inline"
-                      label="City, Country"
+                      label="City"
+                      name="location"
                       type="text"
                       iconClass="dark-grey"
+                      onChange={this.changeHandler}
+                      value={location}
                     />
 
                     <MDBFormInline className="my-4">
                       <label className="mr-2">Date of birth</label>
-                      <DatePicker className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
+                      <DatePicker anme="doBirth" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
                         selected={this.state.startDate}
                         omChange={this.handleBirth}
                       />
@@ -191,6 +265,7 @@ class Signup extends Component {
                         onClick={this.handleRadio(1)}
                         checked={this.state.radio === 1 ? true : false}
                         label="Male"
+                        name="sex"
                         type="radio"
                         id="radio1"
                         size="sm"
@@ -201,6 +276,7 @@ class Signup extends Component {
                         onClick={this.handleRadio(2)}
                         checked={this.state.radio === 2 ? true : false}
                         label="Female"
+                        name="sex"
                         type="radio"
                         id="radio2"
                         size="sm"
@@ -216,6 +292,7 @@ class Signup extends Component {
                       </div>
                       <div className="custom-file">
                         <input
+                          name="photo"
                           type="file"
                           className="custom-file-input"
                           id="inputGroupFile01"
@@ -241,10 +318,16 @@ class Signup extends Component {
                 </MDBModalBody>
               </MDBModal>
 
-              <MDBBtn color="light" className="text-primary" onClick={this.toggle(3)}>
-                Login
+              {/* <MDBBtn color="light" className="text-primary" onClick={this.toggle(3)}>
+                  Login
+                  <MDBIcon far icon="user" className="ml-1" />
+              </MDBBtn> */}
+
+              <MDBBtn color="light" className="text-primary" href="/events">
+                Take a tour
                 <MDBIcon far icon="user" className="ml-1" />
               </MDBBtn>
+
 
               <MDBModal isOpen={this.state.modal3} toggle={this.toggle(3)} size="md" cascading>
                 <MDBModalHeader

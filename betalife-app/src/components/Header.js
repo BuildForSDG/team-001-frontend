@@ -20,6 +20,7 @@ class Header extends Component {
     };
     this.doCollapse = this.doCollapse.bind(this);
     this.handleDisplay = this.handleDisplay.bind(this);
+    this.handleFundsDisplay = this.handleFundsDisplay.bind(this);
   }
 
   doCollapse() {
@@ -62,7 +63,8 @@ class Header extends Component {
       startDate: date
     });
   }
-
+  
+  // handle showing events. Collapse navbar
   handleDisplay = (e) => {
     e.preventDefault();
     // localStorage.setItem("currentState", JSON.stringify(this.state));
@@ -73,6 +75,12 @@ class Header extends Component {
     });
     this.doCollapse();
       this.props.history.push("/events");
+  }
+  
+  handleFundsDisplay = (e) => {
+    e.preventDefault();
+    this.doCollapse();
+      this.props.history.push("/funds");
   }
 
   handleProfile = (e) => {
@@ -158,6 +166,11 @@ class Header extends Component {
                   <MDBNavLink to=""
                     onClick={this.handleDisplay}
                   >Events</MDBNavLink>
+                </MDBNavItem>
+                <MDBNavItem>
+                  <MDBNavLink to=""
+                    onClick={this.handleFundsDisplay}
+                  >Funds</MDBNavLink>
                 </MDBNavItem>
                 <MDBNavItem>
                   <MDBNavLink to="#" onClick={this.handleContact}>Contact</MDBNavLink>

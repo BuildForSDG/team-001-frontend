@@ -12,6 +12,7 @@ const data = [
   ["s017", "Elisa Gallagher", "Portica", "United Kingdom", "Is this organizer with userId o331 duely registered ?"]
 ];
 
+// Premium Component. Replace
 const Feedback = (props) => {
   return (
     <MDBCard>
@@ -19,7 +20,7 @@ const Feedback = (props) => {
         User Feedback
       </MDBCardHeader>
       <MDBCardBody>
-        <MDBTableEditable data={data} columns={columns} striped bordered />
+        {/* <MDBTableEditable data={data} columns={columns} striped bordered /> */}
       </MDBCardBody>
     </MDBCard>
   );

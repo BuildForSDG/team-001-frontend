@@ -15,6 +15,7 @@ import Footer from "./components/Footer";
 import Message from "./components/Message";
 import Dashboard from "./components/Admin/Dashboard";
 import Announcement from "./components/Announcement";
+import Funds from "./components/Funds";
 
 class App extends Component {
   constructor(props) {
@@ -38,10 +39,12 @@ class App extends Component {
         showEventPg: "d-none",
         loggedIn: false,
         redirect: null,
-        showContent: false
+        showContent: false,
+        detailContainer: ''
       };
     }
     this.handleDisplay = this.handleDisplay.bind(this);
+    this.controlViewEventDetail = this.controlViewEventDetail.bind(this);
   }
 
   doCollapse() {
@@ -135,6 +138,12 @@ class App extends Component {
     }
   }
 
+  controlViewEventDetail = (detailContainer) => {
+    this.setState({
+      detailContainer: detailContainer
+    })
+  }
+// ping
   render() {
     const { org } = this.state;
     const {showEvent} = this.state;
@@ -171,7 +180,19 @@ class App extends Component {
                 <Route
                   path={"/Events"}
                   render={props => (
-                    <Events {...props} exact />
+                    <Events {...props} eventDetailsProps={this.controlViewEventDetail} exact />
+                  )} />                  
+                {/* <Route path="/EventDetails"
+                  render= {
+                    (props) => {
+                  return (
+                  <EventDetails {...props} eventDetailsProps={this.state.detailContainer} exact />
+                  )
+                }} /> */}
+                <Route
+                  path={"/Funds"}
+                  render={props => (
+                    <Funds {...props} exact />
                   )} />
                 <Route
                   path={"/Profile"}
@@ -199,7 +220,7 @@ class App extends Component {
                   render={props => (
                     <Footer {...props} exact />
                   )} />
-                <Footer />
+                {/* <Footer /> */}
               </MDBContainer>
             </main>
 
