@@ -49,7 +49,7 @@ class Signup extends Component {
   }
 
   signupSubmit = () => {
-    axios.post("https://betalife.herokuapp.com/api/auth/signup", this.state)
+    axios.post("https://betalife-backend.herokuapp.com/api/auth/signup", this.state)
     .then(response => {
       this.props.history.push("/events");
     })
@@ -319,14 +319,19 @@ class Signup extends Component {
               </MDBModal>
 
               {/* <MDBBtn color="light" className="text-primary" onClick={this.toggle(3)}>
-                  Login
-                  <MDBIcon far icon="user" className="ml-1" />
+                Login
+                <MDBIcon far icon="user" className="ml-1" />
               </MDBBtn> */}
 
-              <MDBBtn color="light" className="text-primary" href="/events">
-                Take a tour
+              <MDBBtn href="/events" color="light" className="text-primary">
+                Login
                 <MDBIcon far icon="user" className="ml-1" />
               </MDBBtn>
+
+              {/* <MDBBtn color="light" className="text-primary" href="/events">
+                Take a tour
+                <MDBIcon far icon="user" className="ml-1" />
+              </MDBBtn> */}
 
 
               <MDBModal isOpen={this.state.modal3} toggle={this.toggle(3)} size="md" cascading>
@@ -336,29 +341,29 @@ class Signup extends Component {
                   className="text-center light-blue darken-3 white-text"
                 >
                   <MDBIcon icon="user" className="px-3" />
-                Login Form
-              </MDBModalHeader>
-              <MDBModalBody>
-                <MDBInput label="Your email"
-                  type="email"
-                />
-                <MDBInput
-                  label="Your password"
-                  type="password"
-                  iconClass="dark-grey"
-                />
-                <div className="text-center mt-1-half">
-                  <MDBBtn
-                    color="info"
-                    className="mb-2"
-                    onClick={this.toggle(3)}
-                  >
-                    login
-                    <MDBIcon icon="paper-plane" className="ml-1" />
-                  </MDBBtn>
-                </div>
-              </MDBModalBody>
-            </MDBModal>
+                  Login Form
+                </MDBModalHeader>
+                <MDBModalBody>
+                  <MDBInput label="Your email"
+                    type="email"
+                  />
+                  <MDBInput
+                    label="Your password"
+                    type="password"
+                    iconClass="dark-grey"
+                  />
+                  <div className="text-center mt-1-half">
+                    <MDBBtn
+                      color="info"
+                      className="mb-2"
+                      onClick={this.toggle(3)}
+                    >
+                      login
+                      <MDBIcon icon="paper-plane" className="ml-1" />
+                    </MDBBtn>
+                  </div>
+                </MDBModalBody>
+              </MDBModal>
 
           </MDBContainer>
         </MDBMask>
