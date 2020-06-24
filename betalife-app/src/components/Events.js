@@ -25,8 +25,8 @@ class Events extends Component {
       modal6: false,
       showDetailContainer: '',
       likeEvent: false,
-      // _id: '',
-      userIs: '',
+      id: '',
+      userId: '',
       organizerId: '',
       sponsorId: '',
       title: '',
@@ -55,13 +55,14 @@ class Events extends Component {
   // checkStatus = () => {
   // // check if user is logged in
   // }
-
+  
+  // function for Home page redirect.  
   handleHome = () => {
     // e.preventDefault();
     this.props.history.push("/App");
   }
 
-  // nr represents modal number
+  // nr represents number for each modal to be displyed.
   toggle = (nr) => (e) => {
     // modal. View event detail.
     if (nr === 1) {
@@ -96,33 +97,40 @@ class Events extends Component {
     }
     // Modal.Update Event .
     else if (nr === 6) {
-      e.preventDefault();
+      // e.preventDefault();
       this.setState({
         modal6: !this.state.modal6
       });
     }
   }
-
-  // handleViewEventDetail = (e, detailContainer) => {
-  //   // this.props.history.push("/EventDetails");
-  //   const { eventDetailsProps } = this.props;
-  //   eventDetailsProps(detailContainer);
-  // }
-
-  handleViewEventDetail = (e, detailContainer) => {
-      this.setState({
-        modal1: !this.state.modal1,
-        showDetailContainer: detailContainer
-      });
+  
+  // function for displaying Update Event form 
+  handleViewUpdate = (e, eventId) => {
+    e.preventDefault();
+    this.setState({
+      modal6: !this.state.modal6,
+      id: eventId._id
+    });
+    // this.getEvents();
   }
-
+  
+  // function for event details view (UI)
+  handleViewEventDetail = (e, detailContainer) => {
+    this.setState({
+      modal1: !this.state.modal1,
+      showDetailContainer: detailContainer
+    });
+  }
+  
+  // function for like button
   toggleLike = (e) => {
     e.preventDefault();
     this.setState({
       likeEvent: !this.state.likeEvent
     });
   }
-
+  
+  // function for choosing category on Add Event form.
   handleRadio = (nr) => () => {
     if (nr === 1) {
       this.setState({
@@ -137,7 +145,8 @@ class Events extends Component {
       });
     }
   }
-
+  
+  // date select function. nr represents the number for each date field.
   handleDateSelect = (nr) => (date) => {
     if (nr === 1) {
       this.setState({
@@ -160,7 +169,8 @@ class Events extends Component {
       });
     }
   }
-
+  
+  // date change function. nr represents toggle number for different date fields
   handleDate = (nr, date) => () => {
     if (nr === 1) {
       this.setState({
@@ -183,14 +193,16 @@ class Events extends Component {
       });
     }
   }
-
+  
+  // toaster function for showing alerts
   notify = () => {
     toast("You've successfully enrolled!");
   }
   
+  // function for displaying all events
   getEvents = () => {
     // fetch data here
-    axios.get('http://localhost:4000/api/events')
+    axios.get('https://betalife-backend.herokuapp.com/api/events')
     .then(response => {
       // console.log(response);
       if(response.status === 200) {
@@ -207,15 +219,16 @@ class Events extends Component {
     })
     .catch( error => error );
   }
-
-
+  
+  // function for capturing user input as they type
   changeHandler = (e) => {
     e.preventDefault();
     this.setState({
     [e.target.name]: e.target.value
   });
   }
-
+  
+  // submit function for Add Event form
   newEventSubmit = (e) => {
     e.preventDefault();        
     axios.post('http://localhost:4000/api/events', this.state)
@@ -234,29 +247,33 @@ class Events extends Component {
     .catch( error => error );
   }
   
+  // submit function for Update Event form
   updateEventSubmit = (e) => {
-    e.preventDefault();        
-    axios.post('http://localhost:4000/api/events', this.state)
-    .then(response => {
-      console.log(response);
-      if(response.status === 201) {
-      }
-      else {
-        alert("could not update data");
-      }
-    this.getEvents();
-    this.setState({
-      modal6: false
-    });
-  })
-    .catch( error => error );
+    e.preventDefault();
+    const id = this.state.id;
+    console.log(id);
+  // axios.put(`http://localhost:4000/api/events/...
+  }
+  
+  //  delete Event function
+  deleteEvent = (e, eventId) => {
+    e.preventDefault();
+    // // const id = this.state.id;
+    // this.setState({ id: eventId.id})
+    // axios.delete('api/events', {data: {id: this.state.id}})
+    // .then((response) => {
+    //   console.log("event deleted!");
+    // })
+    // .catch((error) => {
+    //   console.error(error);
+    // });
   }
 
   render(){
     const dueDateMin = new Date(Date.now() + (86400000 * 3));
   const eventDetailsProp2 = this.state.showDetailContainer;
     const {events} = this.state;
-    const { title, description, dueRegDate, startDate, endDate, targetAudience, category, payAmount, paymentDetail, location, industry, imageUrl } = this.state;
+    const { id, title, description, dueRegDate, startDate, endDate, targetAudience, category, payAmount, paymentDetail, location, industry, imageUrl } = this.state;
     return (
       <div>
         <div className="row mt-4 pt-5">
@@ -329,29 +346,44 @@ class Events extends Component {
                       <MDBIcon far icon="clock" /> Last updated {event.createdDate}
                     </li>
 
-                    {/* <li className="list-inline-item float-right pr-1">
-                      <a href="#" onClick={this.toggle(6)} className="white-text">                      
-                        <MDBIcon far icon="edit" />
-                      </a>
-                    </li> */}
+                    {/* delete event button */}
                     <li className="list-inline-item float-right pr-1">
-                      <a href="#" className="white-text">                      
-                      <MDBIcon far icon="edit" />
+                      <a href="#" className="white-text" onClick={(e) => {
+                        const eventId = event;
+                        return (
+                          this.deleteEvent(e, eventId)
+                        )}}>  
+                        <MDBIcon far icon="trash-alt" />
                       </a>
                     </li>
+
+                    {/* update event button */}
+                    <li className="list-inline-item float-right pr-1">
+                      <a href="#" className="white-text" onClick={(e) => {
+                        const eventId = event;
+                        return (
+                          this.handleViewUpdate(e, eventId)
+                        )}}>                      
+                        <MDBIcon far icon="edit" />
+                      </a>
+                    </li>
+
+                    {/* share button */}
                     <li className="list-inline-item pl-2 float-right">
                       <a href="#!" className="white-text">
-                        <MDBIcon icon="share-alt" className="mr-1" />
+                        <MDBIcon icon="share-alt" className="mr-2" />
                         Share
                       </a>
                     </li>
+
+                    {/* like button */}
                     <li className="list-inline-item float-right pr-1">
                       <a href="#!" className="white-text">
                         <MDBIcon color="white" fab icon="gratipay" className="pink-text mr-1" />
                         {event.like}
                       </a>
                     </li>
-                    
+
                   </ul>
                 </div>
               </MDBCard>
@@ -515,12 +547,12 @@ class Events extends Component {
                     value={description}
                   />
                   {/* <MDBFormInline className="my-4">
-                    <label className="mr-2">Date created</label>
-                    <DatePicker anme="createdDate" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
-                    selected={createdDate}
-                    onSelect={this.handleDateSelect(1)}
-                    omChange={this.handleDate(1)}
-                    />
+                      <label className="mr-2">Date created</label>
+                      <DatePicker anme="createdDate" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
+                      selected={createdDate}
+                      onSelect={this.handleDateSelect(1)}
+                      omChange={this.handleDate(1)}
+                      />
                   </MDBFormInline> */}
                   <MDBFormInline className="my-4">
                     <label className="mr-2">Registration due date</label>
@@ -610,7 +642,7 @@ class Events extends Component {
                     type="text"
                     iconClass="dark-grey"
                     onChange={this.changeHandler}
-                        value={location}
+                    value={location}
                   />
                   <MDBInput
                     className="d-inline"
@@ -646,8 +678,8 @@ class Events extends Component {
               </div>
             </MDBModalBody>
           </MDBModal>
-          
-          {/* Add Event Modal */}
+
+          {/* Update Event Modal */}
           <MDBModal isOpen={this.state.modal6} toggle={this.toggle(6)} size="lg" cascading>
             <MDBModalHeader
               toggle={this.toggle(6)}
@@ -655,11 +687,19 @@ class Events extends Component {
               className="text-center light-blue darken-3 white-text"
             ><MDBIcon />
               <MDBIcon icon="calendar-check" className="px-3" />
-              Update Event
             </MDBModalHeader>
             <MDBModalBody>
               <div className="text-left">
                 <form onSubmit={this.updateEventSubmit}>
+                  {/* { console.log(id._id) } */}
+                  <MDBInput className=""
+                    label="Event Id"
+                    name="id"
+                    type="text"
+                    iconClass="dark-grey"
+                    value={id}
+                  />
+
                   <MDBInput
                     label="Event Title"
                     name="title"
@@ -764,7 +804,7 @@ class Events extends Component {
                     type="text"
                     iconClass="dark-grey"
                     onChange={this.changeHandler}
-                        value={location}
+                    value={location}
                   />
                   <MDBInput
                     className="d-inline"
