@@ -1,10 +1,12 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router , Route, Switch, Redirect, Link } from "react-router-dom";
+import { BrowserRouter as Router , withRouter, Route, Switch, Redirect, Link } from "react-router-dom";
 
+
+import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import axios from "axios";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { MDBContainer, MDBMask, MDBView, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput, MDBFormInline} from "mdbreact";
 
 import loginBg from "../images/buildings.jpg";
@@ -23,15 +25,16 @@ class Signup extends Component {
       org: false,
       toggleShow: "d-block",
       toggleHide: "d-none",
+      role: "",
       firstName: '',
       lastName: "",
       orgName: "",
-      phone: "",
+      phoneNumber: '',
       email: '',
       password: '',
-      location: '',
-      doBirth: "",
-      sex: '',
+      city: '',
+      doBirth: new Date(),
+      sex: 'female',
       photo: ''
     };
   }
@@ -41,33 +44,16 @@ class Signup extends Component {
       collapse: !this.state.collapse
     });
   }
-
-  changeHandler = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
-  }
-
-  signupSubmit = () => {
-    axios.post("https://betalife-backend.herokuapp.com/api/auth/signup", this.state)
-    .then(response => {
-      this.props.history.push("/events");
-    })
-    .catch(error => {
-      console.log(error);
-    });
-  }
-
+  
   // nr represents modal number
   toggle = (nr) => (e) => {
-    e.preventDefault();
+    // e.preventDefault();
 
     // sign up submit button
     if (nr === 2) {
       this.setState({
         modal2: !this.state.modal2
       });
-      this.signupSubmit();
     }
     else if (nr === 3){
       this.setState({
@@ -82,32 +68,105 @@ class Signup extends Component {
     }
   }
 
+  // handleRadio = (nr) => () => {
+  //   this.setState({
+  //     radio: nr
+  //   });
+  // }
+  
   handleRadio = (nr) => () => {
+    if (nr === 1) {
+      this.setState({
+        radio: nr,
+        sex: "male",
+      });
+    }
+    else if (nr === 2) {
+      this.setState({
+        radio: nr,
+        sex: "female",
+      });
+    }
+  }
+  
+  handleDateSelect = (date) => {
     this.setState({
-      radio: nr
+      doBirth: date
     });
   }
 
   handleBirth = (date) => {
     this.setState({
-      startDate: date
+      doBirth: date
     });
   }
 
   handleTrainee = (event) => {
     event.preventDefault();
-    this.setState({ org: false });
+    this.setState({ 
+      role: "trainee",
+      org: false });
   }
 
   handleOrganizer = (event) => {
     event.preventDefault();
-    this.setState({ org: true });
+    this.setState({ 
+      role: "organizer",
+      org: true });
   }
 
   handleSponsor = (event) => {
     event.preventDefault();
-    this.setState({ org: true });
+    this.setState({ 
+      role: "sponsor",
+      org: true });
   }
+  
+  // handle Phone number change
+  // handleNumberChange = (e) => {
+  //   this.setState({
+  //     phoneNumber: e.target.value
+  //   });
+  //   console.log(e.target.value);
+  // }
+  
+  // Toast  signup successful
+  notify = () => {
+    toast("Signup successful!");
+  }
+
+  changeHandler = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
+  signupSubmit = (e) => {
+    axios.post("https://betalife-backend.herokuapp.com/api/auth/signup", this.state)
+    .then(response => {
+      console.log(response);
+      if(response.status === 201){      
+      this.notify();
+      setTimeout(() => {
+      this.props.history.push("/events");        
+    }, 4000);
+      }
+      else {
+        alert("Could not create new user!");
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    });
+    
+    // axios.post("https://betalife-backend.herokuapp.com/api/auth/signup", this.state)
+    // .then(response => {
+    //   this.props.history.push("/events");
+    // })
+    // .catch(error => {
+    //   console.log(error);
+    // });
+  }  
   
   handleLogin = (e) => {
     e.preventDefault();
@@ -126,10 +185,10 @@ class Signup extends Component {
       firstName,
       lastName,
       orgName,
-      phone,
+      phoneNumber,
       email,
       password,
-      location,
+      city,
       doBirth,
       sex,
       photo } = this.state;
@@ -146,6 +205,7 @@ class Signup extends Component {
                 <MDBIcon icon="user-plus" className="mr-1" /> Sign up
               </MDBBtn>
 
+              {/* Modal for signup */}
               <MDBModal isOpen={this.state.modal2} toggle={this.toggle(2)} size="lg" cascading>
                 <MDBModalHeader
                   toggle={this.toggle(2)}
@@ -155,222 +215,247 @@ class Signup extends Component {
                   <MDBIcon icon="user-plus" className="px-3" />
                   Sign up Form
                 </MDBModalHeader>
-                <MDBModalBody>
-                  <h3 className="text-center"> Select Role </h3>
+                <form onSubmit={this.signupSubmit}>                
+                  <MDBModalBody>
+                    <h3 className="text-center"> Select Role </h3>
 
-                  <fragment className="btn-group text-center">
-                    <MDBBtn color="reset-color" className="text-primary" onClick={this.handleTrainee}>
-                      Trainee
-                      <MDBIcon  icon="diagnoses" className="ml-1" />
-                    </MDBBtn>
-                    <MDBBtn color="reset-color" className="text-primary" onClick={this.handleOrganizer}>
-                      Organizer
-                      <MDBIcon icon="user-tie" className="ml-1" />
-                    </MDBBtn>
-                    <MDBBtn color="reset-color" className="text-primary" onClick={this.handleSponsor}>
-                      Sponsor
-                      <MDBIcon  icon="crown" className="ml-1" />
-                    </MDBBtn>
-                  </fragment>
+                    <fragment className="btn-group text-center">
+                      <MDBBtn color="reset-color" className="text-primary" onClick={this.handleTrainee}>
+                        <h6>Trainee</h6>
+                        <MDBIcon  icon="diagnoses" className="ml-1" />
+                      </MDBBtn>
+                      <MDBBtn color="reset-color" className="text-primary" onClick={this.handleOrganizer}>
+                        <h6>Organizer</h6>
+                        <MDBIcon icon="user-tie" className="ml-1" />
+                      </MDBBtn>
+                      <MDBBtn color="reset-color" className="text-primary" onClick={this.handleSponsor}>
+                        <h6>Sponsor</h6>
+                        <MDBIcon  icon="crown" className="ml-1" />
+                      </MDBBtn>
+                    </fragment>
 
-                  <div className="text-left">
-                    <MDBInput
-                      label="First name"
-                      name="firstName"
-                      type="text"
-                      iconClass="dark-grey"
-                      onChange={this.changeHandler}
-                      value={firstName}
-                    />
+                    <div className="text-left">
+                      <MDBInput
+                        label="First name"
+                        name="firstName"
+                        type="text"
+                        iconClass="dark-grey"
+                        required
+                        onChange={this.changeHandler}
+                        value={firstName}
+                      />
+                      {/* <small id="firstNameHelp" className="form-text text-muted">
+                        Required
+                      </small> */}
 
-                    <MDBInput
-                      label="last name"
-                      name="lastName"
-                      type="text"
-                      iconClass="dark-grey"
-                      onChange={this.changeHandler}
-                      value={lastName}
-                    />
-                    {/* hide organization field based on role selected */}
-                    { org !== true ?
-                      <fragment className="d-none">
+                      <MDBInput
+                        label="last name"
+                        name="lastName"
+                        type="text"
+                        iconClass="dark-grey"
+                        required
+                        onChange={this.changeHandler}
+                        value={lastName}
+                      />
+                      {/* hide organization field based on role selected */}
+                      { org !== true ?
+                        <fragment className="d-none">
+                          <MDBInput
+                            label="Organization name"
+                            Name="orgName"
+                            type="text"
+                            iconClass="dark-grey"
+                            onChange={this.changeHandler}
+                            value={orgName}
+                          />
+                        </fragment>
+                      :
+                      <fragment>
                         <MDBInput
                           label="Organization name"
-                          Name="orgName"
+                          name="orgName"
                           type="text"
                           iconClass="dark-grey"
                           onChange={this.changeHandler}
                           value={orgName}
                         />
                       </fragment>
-                    :
-                    <fragment>
+                      }
+
                       <MDBInput
-                        label="Organization name"
-                        name="orgName"
+                        label="Phone number"
+                        name="phoneNumber"
+                        type="number"
+                        iconClass="dark-grey"
+                        onChange={this.changeHandler}
+                        value={phoneNumber}
+                      />
+
+                      <MDBInput
+                        label="Your email"
+                        name="email"
+                        type="email"
+                        required
+                        onChange={this.changeHandler}
+                        value={email}
+                      />
+                      <MDBInput
+                        label="Your password"
+                        name="password"
+                        type="password"
+                        iconClass="dark-grey"
+                        required
+                        onChange={this.changeHandler}
+                        value={password}
+                      />
+                      <MDBInput
+                        className="d-inline"
+                        label="City"
+                        name="city"
                         type="text"
                         iconClass="dark-grey"
                         onChange={this.changeHandler}
-                        value={orgName}
+                        value={city}
                       />
-                    </fragment>
-                    }
 
-                    <MDBInput
-                      label="Phone number"
-                      name="phone"
-                      type="number"
-                      iconClass="dark-grey"
-                      onChange={this.changeHandler}
-                      value={phone}
-                    />
+                      <MDBFormInline className="my-4">
+                        <MDBInput
+                          className="d-inline"
+                          label="Date of Birth"
+                          name="doBirth"
+                          type="date"
+                          min="1960-01-01"
+                          max="2005-12-31"
+                          iconClass="dark-grey"
+                          selected={doBirth}
+                          onSelect={this.handleDateSelect}
+                          onChange={this.changeHandler}
+                          value={doBirth}
+                        />
+                        {/* <label className="mr-2">Date of birth</label> */}
 
-                    <MDBInput
-                      label="Your email"
-                      name="email"
+                        {/* <DatePicker name="doBirth" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
+                          selected={doBirth}
+                          onSelect={this.handleDateSelect}
+                          omChange={this.handleBirth}
+                        /> */}
+                      </MDBFormInline>
+
+                      <fragment className="form-check-inline mb-3">
+                        <label className="mr-5">Sex</label>
+                        <MDBInput
+                          gap
+                          onClick={this.handleRadio(1)}
+                          checked={this.state.radio === 1 ? true : false}
+                          label="Male"
+                          name="sex"
+                          type="radio"
+                          id="radio1"
+                          size="sm"
+                          containerClass="mr-3"
+                        />
+                        <MDBInput
+                          gap
+                          onClick={this.handleRadio(2)}
+                          checked={this.state.radio === 2 ? true : false}
+                          label="Female"
+                          name="sex"
+                          type="radio"
+                          id="radio2"
+                          size="sm"
+                          containerClass="mr-3"
+                        />
+                      </fragment>
+
+                      {/* <div className="input-group mb-4">
+                        <div className="input-group-prepend">
+                        <span className="input-group-text" id="inputGroupFileAddon01">
+                        Upload
+                        </span>
+                        </div>
+                        <div className="custom-file">
+                        <input
+                        name="photo"
+                        type="file"
+                        className="custom-file-input"
+                        id="inputGroupFile01"
+                        aria-describedby="inputGroupFileAddon01"
+                        />
+                        <label className="custom-file-label" htmlFor="inputGroupFile01">
+                        Choose file
+                        </label>
+                        </div>
+                      </div> */}
+
+                      <div className="text-center mt-1-half">
+                        <MDBBtn
+                          color="info"
+                          className="mb-2"
+                          onClick={                      this.signupSubmit}
+                        >
+                          Sign up
+                          <MDBIcon icon="paper-plane" className="ml-1" />
+                        </MDBBtn>
+                      </div>
+                    </div>
+                  </MDBModalBody>
+                </form>
+                </MDBModal>
+
+                {/* <MDBBtn color="light" className="text-primary" onClick={this.toggle(3)}>
+                  Login
+                  <MDBIcon far icon="user" className="ml-1" />
+                </MDBBtn> */}
+
+                <MDBBtn href="/events" color="light" className="text-primary">
+                  Login
+                  <MDBIcon far icon="user" className="ml-1" />
+                </MDBBtn>
+
+                {/* <MDBBtn color="light" className="text-primary" href="/events">
+                  Take a tour
+                  <MDBIcon far icon="user" className="ml-1" />
+                </MDBBtn> */}
+
+
+                <MDBModal isOpen={this.state.modal3} toggle={this.toggle(3)} size="md" cascading>
+                  <MDBModalHeader
+                    toggle={this.toggle(3)}
+                    titleClass="d-inline title"
+                    className="text-center light-blue darken-3 white-text"
+                  >
+                    <MDBIcon icon="user" className="px-3" />
+                    Login Form
+                  </MDBModalHeader>
+                  <MDBModalBody>
+                    <MDBInput label="Your email"
                       type="email"
-                      onChange={this.changeHandler}
-                      value={email}
                     />
                     <MDBInput
                       label="Your password"
-                      name="password"
                       type="password"
                       iconClass="dark-grey"
-                      onChange={this.changeHandler}
-                      value={password}
                     />
-                    <MDBInput
-                      className="d-inline"
-                      label="City"
-                      name="location"
-                      type="text"
-                      iconClass="dark-grey"
-                      onChange={this.changeHandler}
-                      value={location}
-                    />
-
-                    <MDBFormInline className="my-4">
-                      <label className="mr-2">Date of birth</label>
-                      <DatePicker anme="doBirth" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
-                        selected={this.state.startDate}
-                        omChange={this.handleBirth}
-                      />
-                    </MDBFormInline>
-
-                    <fragment className="form-check-inline mb-3">
-                      <label className="mr-5">Sex</label>
-                      <MDBInput
-                        gap
-                        onClick={this.handleRadio(1)}
-                        checked={this.state.radio === 1 ? true : false}
-                        label="Male"
-                        name="sex"
-                        type="radio"
-                        id="radio1"
-                        size="sm"
-                        containerClass="mr-3"
-                      />
-                      <MDBInput
-                        gap
-                        onClick={this.handleRadio(2)}
-                        checked={this.state.radio === 2 ? true : false}
-                        label="Female"
-                        name="sex"
-                        type="radio"
-                        id="radio2"
-                        size="sm"
-                        containerClass="mr-3"
-                      />
-                    </fragment>
-
-                    <div className="input-group mb-4">
-                      <div className="input-group-prepend">
-                        <span className="input-group-text" id="inputGroupFileAddon01">
-                          Upload
-                        </span>
-                      </div>
-                      <div className="custom-file">
-                        <input
-                          name="photo"
-                          type="file"
-                          className="custom-file-input"
-                          id="inputGroupFile01"
-                          aria-describedby="inputGroupFileAddon01"
-                        />
-                        <label className="custom-file-label" htmlFor="inputGroupFile01">
-                          Choose file
-                        </label>
-                      </div>
-                    </div>
-
                     <div className="text-center mt-1-half">
                       <MDBBtn
                         color="info"
                         className="mb-2"
-                        onClick={this.toggle(2)}
+                        onClick={this.toggle(3)}
                       >
-                        Sign up
+                        login
                         <MDBIcon icon="paper-plane" className="ml-1" />
                       </MDBBtn>
                     </div>
-                  </div>
-                </MDBModalBody>
-              </MDBModal>
+                  </MDBModalBody>
+                </MDBModal>
 
-              {/* <MDBBtn color="light" className="text-primary" onClick={this.toggle(3)}>
-                Login
-                <MDBIcon far icon="user" className="ml-1" />
-              </MDBBtn> */}
-
-              <MDBBtn href="/events" color="light" className="text-primary">
-                Login
-                <MDBIcon far icon="user" className="ml-1" />
-              </MDBBtn>
-
-              {/* <MDBBtn color="light" className="text-primary" href="/events">
-                Take a tour
-                <MDBIcon far icon="user" className="ml-1" />
-              </MDBBtn> */}
-
-
-              <MDBModal isOpen={this.state.modal3} toggle={this.toggle(3)} size="md" cascading>
-                <MDBModalHeader
-                  toggle={this.toggle(3)}
-                  titleClass="d-inline title"
-                  className="text-center light-blue darken-3 white-text"
-                >
-                  <MDBIcon icon="user" className="px-3" />
-                  Login Form
-                </MDBModalHeader>
-                <MDBModalBody>
-                  <MDBInput label="Your email"
-                    type="email"
-                  />
-                  <MDBInput
-                    label="Your password"
-                    type="password"
-                    iconClass="dark-grey"
-                  />
-                  <div className="text-center mt-1-half">
-                    <MDBBtn
-                      color="info"
-                      className="mb-2"
-                      onClick={this.toggle(3)}
-                    >
-                      login
-                      <MDBIcon icon="paper-plane" className="ml-1" />
-                    </MDBBtn>
-                  </div>
-                </MDBModalBody>
-              </MDBModal>
-
-          </MDBContainer>
-        </MDBMask>
-      </MDBView>
+              </MDBContainer>
+            </MDBMask>
+          </MDBView>
+          <ToastContainer pauseOnFocusLoss={true} />
       </div>
     );
   }
 }
 
-export default Signup;
+export default withRouter(Signup);
