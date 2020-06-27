@@ -6,6 +6,7 @@ import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse,
 class Header extends Component {
   constructor(props) {
     super(props);
+      
     this.state = {
       collapse: false,
       isWideEnough: false,
@@ -16,18 +17,64 @@ class Header extends Component {
       startDate: new Date(),
       org: false,
       loggedIn: false,
-      redirect: null,
+      name: '',
+      redirect: null
     };
     this.doCollapse = this.doCollapse.bind(this);
     this.handleDisplay = this.handleDisplay.bind(this);
     this.handleFundsDisplay = this.handleFundsDisplay.bind(this);
+  }  
+  
+  componentDidMount() {
+    localStorage.getItem("localData") ?
+    this.setState({
+        loggedIn: true,
+        modal4: false,
+        collapse: false
+      }) :
+    this.setState({
+      loggedIn: false,
+        modal4: false,
+        collapse: false
+      })
+  }
+  
+  handleLogin = (e) => {
+    e.preventDefault();
+    this.doCollapse();
+    this.props.history.push("/");
+  }
+
+  handleLogout = (e) => {
+    e.preventDefault();
+    this.setState({
+      loggedIn: false
+    });
+    localStorage.clear();
+    this.doCollapse();
+    this.props.history.push("/");
+  }
+
+  closeNav = (e) => {
+    e.preventDefault();
+    this.doCollapse();
+    this.props.history.push("/Events");
   }
 
   doCollapse() {
     this.setState({
-      collapse: !this.state.collapse
+      collapse: !this.state.collapse,
     });
   }
+  
+  // checkUser = () => {
+  //   if (localStorage.getItem("localData")) {
+  //     this.setState({
+  //     username: JSON.parse(localStorage.getItem("localData")).user.firstName })
+  //   }
+  //   else {}
+  //   console.log(this.state.username);
+  // }
 
   // nr represents modal number
   toggle = (nr) => (e) => {
@@ -55,12 +102,6 @@ class Header extends Component {
   handleRadio = (nr) => () => {
     this.setState({
       radio: nr
-    });
-  }
-
-  handleBirth = (date) => {
-    this.setState({
-      startDate: date
     });
   }
   
@@ -100,33 +141,6 @@ class Header extends Component {
     this.props.history.push("/Dashboard");
   }
 
-  handleLogin = (e) => {
-    e.preventDefault();
-    this.setState({
-      loggedIn: true,
-      modal4: false,
-      collapse: false
-    });
-    this.doCollapse();
-    this.props.history.push("/events");
-  }
-
-  handleLogout = (e) => {
-    e.preventDefault();
-    this.setState({
-      loggedIn: false
-    });
-    // localStorage.setItem("currentState", JSON.stringify(this.state));
-    this.doCollapse();
-    this.props.history.push("/");
-  }
-
-  closeNav = (e) => {
-    e.preventDefault();
-    this.doCollapse();
-    this.props.history.push("/Events");
-  }
-
   handleAbout = (e) => {
     e.preventDefault();
     this.doCollapse();
@@ -146,6 +160,9 @@ class Header extends Component {
   }
 
   render() {
+    const localData = localStorage.getItem("localData") ? JSON.parse(localStorage.getItem("localData")).user.firstName :
+    null
+    // console.log(this.props.localData.user.firstName);
     return (
       <div>
         <header>
@@ -228,7 +245,7 @@ class Header extends Component {
                   <MDBNavLink to="#"><MDBIcon fab icon="instagram" /></MDBNavLink>
                 </MDBNavItem> */}
                 <MDBNavItem>
-                  { this.state.loggedIn === true ?
+                  { localData ?
                     <MDBNavbarNav>
                       <MDBNavItem>
                         <MDBNavLink to="#" onClick={this.handleAnnouncement}><MDBIcon far icon="bell" />
@@ -236,7 +253,7 @@ class Header extends Component {
                         </MDBNavLink>
                       </MDBNavItem>
                       <MDBNavItem>
-                        <MDBNavLink to="#" onClick={this.handleProfile}><MDBIcon far icon="user" />
+                        <MDBNavLink to="#" onClick={this.handleProfile}> <MDBIcon far icon="user" /> {this.props.localData.user.firstName}
                         </MDBNavLink>
                       </MDBNavItem>
                       <MDBNavItem>
@@ -247,7 +264,7 @@ class Header extends Component {
                     </MDBNavbarNav> :
                     <MDBNavLink to="#" onClick={this.handleLogin}> Log in
                       {/* <MDBIcon icon="sign-in-alt" /> */}
-                      </MDBNavLink>
+                    </MDBNavLink>
                   }
                 </MDBNavItem>
 

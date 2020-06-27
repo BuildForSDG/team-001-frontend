@@ -58,7 +58,6 @@ class Events extends Component {
   
   // function for Home page redirect.  
   handleHome = () => {
-    // e.preventDefault();
     this.props.history.push("/App");
   }
 
@@ -111,7 +110,6 @@ class Events extends Component {
       modal6: !this.state.modal6,
       id: eventId._id
     });
-    // this.getEvents();
   }
   
   // function for event details view (UI)
@@ -319,13 +317,21 @@ class Events extends Component {
                 <div className="text-white text-center d-flex align-items-center rgba-black-strong py-2 px-4">
                   <div className="w-100">
                     <h5 className="light-blue-text pt-2">
-                      <MDBIcon icon="chart-pie" className="capitalize" /> {event.industry} Category
+                      <MDBIcon icon="chart-pie" className="capitalize" /> 
+                      { event.industry.length > 31 ?
+                        event.industry.substr(0, 31-1) + '...' : event.industry }
                     </h5>
                     <MDBCardTitle tag="h3" className="pt-2">
-                      <strong>{event.title}</strong>
+                      <strong>
+                        {/* truncate long title */}
+                        { event.title.length > 26 ?
+                          event.title.substr(0, 26-1) + '...' : event.title }
+                      </strong>
                     </MDBCardTitle>
                     <p>
-                      {event.description}
+                      {/* truncate long description */}
+                      { event.description.length > 60 ?
+                        event.description.substr(0, 60-1) + '...' : event.description }
                     </p>
                     <a href="#"><h6> {event.organizerId} </h6></a>
 

@@ -21,30 +21,67 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    const data = localStorage.getItem("currentState");
-    if(data){
-      this.state = JSON.parse(data);
-    }
-    else {
-      this.state = {
-        collapse: false,
-        isWideEnough: false,
-        modal2: false,
-        modal3: false,
-        modal4: false,
-        radio: 2,
-        startDate: new Date(),
-        org: false,
-        showSignupPg: "d-block",
-        showEventPg: "d-none",
-        loggedIn: false,
-        redirect: null,
-        showContent: false,
-        detailContainer: ''
-      };
-    }
-    this.handleDisplay = this.handleDisplay.bind(this);
+    this.state = {
+      collapse: false,
+      isWideEnough: false,
+      modal2: false,
+      modal3: false,
+      // modal4: false,
+      // radio: 2,
+      // startDate: new Date(),
+      // org: false,
+      showSignupPg: "d-block",
+      showEventPg: "d-none",
+      loggedIn: false,
+      redirect: null,
+      showContent: false,
+      detailContainer: '',
+      user: {},
+      username: null
+    };
+    
+    // this.handleDisplay = this.handleDisplay.bind(this);
     this.controlViewEventDetail = this.controlViewEventDetail.bind(this);
+    this.handleLoginAuth = this.handleLoginAuth.bind(this);
+  }
+  
+  componentDidMount() {
+    localStorage.getItem("localData") ?
+    this.setState({ loggedIn: true }) :
+    this.setState({ loggedIn: false })
+  }
+  
+  handleLoginAuth = (data) => { 
+    this.setState({
+    // collapse: false,
+    loggedIn: true,
+    user: data
+    });   
+    localStorage.setItem("localData", JSON.stringify(this.state));
+    setTimeout(() => {
+      this.setState({
+        username: JSON.parse(localStorage.getItem("localData")).user.firstName
+      });
+    }, 500);
+  }
+
+  handleLogout = (e) => {
+    e.preventDefault();
+    this.setState({
+      loggedIn: false,
+      // // showEventPg: "d-block",
+      // // showSignupPg: "d-none",
+      // redirect: "/Signup"
+    });
+    // localStorage.setItem("currentState", JSON.stringify(this.state));
+    this.doCollapse();
+    if(this.state.redirect){
+    return <Redirect to={this.state.redirect} />
+    }
+    return(
+      <Signup />
+    )
+    // this.props.history.push("/")
   }
 
   doCollapse() {
@@ -68,66 +105,23 @@ class App extends Component {
       modal3: !this.state.modal3
       });
     }
-    else if (nr === 4){
-      this.setState({
-        modal4: !this.state.modal4
-      });
-      this.doCollapse();
-    }
+    // else if (nr === 4){
+    //   this.setState({
+    //     modal4: !this.state.modal4
+    //   });
+    //   this.doCollapse();
+    // }
   }
 
-  handleRadio = (nr) => () => {
-    this.setState({
-      radio: nr
-    });
-  }
-
-  handleBirth = (date) => {
-    this.setState({
-      startDate: date
-    });
-  }
-
-  handleDisplay = () => {
-    // localStorage.setItem("currentState", JSON.stringify(this.state));
-    // localStorage.clear();
-    // this.setState({
-    //   // showEventPg: "d-block",
-    //   // showSignupPg: "d-none",
-    // });
-    this.doCollapse();
-  }
-
-  handleLogin = (e) => {
-    e.preventDefault();
-    // localStorage.setItem("currentState", JSON.stringify(this.state));
-    // localStorage.clear();
-    this.setState({
-      loggedIn: true,
-      modal4: false,
-      collapse: false
-    });
-    this.doCollapse();
-  }
-
-  handleLogout = (e) => {
-    e.preventDefault();
-    this.setState({
-      // loggedIn: false,
-      // // showEventPg: "d-block",
-      // // showSignupPg: "d-none",
-      // redirect: "/Signup"
-    });
-    // localStorage.setItem("currentState", JSON.stringify(this.state));
-    this.doCollapse();
-    if(this.state.redirect){
-    return <Redirect to={this.state.redirect} />
-    }
-    return(
-      <Signup />
-    )
-    // this.props.history.push("/")
-  }
+  // handleDisplay = () => {
+  //   // localStorage.setItem("currentState", JSON.stringify(this.state));
+  //   // localStorage.clear();
+  //   // this.setState({
+  //   //   // showEventPg: "d-block",
+  //   //   // showSignupPg: "d-none",
+  //   // });
+  //   this.doCollapse();
+  // }  
 
   closeNav = (e) => {
     // e.preventDefault();
@@ -144,15 +138,22 @@ class App extends Component {
     })
   }
 // ping
-  render() {
-    const { org } = this.state;
-    const {showEvent} = this.state;
-    const {collapse} = this.state;
-    const {showContent} = this.state
+  render() {    
+    console.log(JSON.parse(localStorage.getItem("localData")));
+    
+    const userData = localStorage.getItem("localData") ? JSON.parse(localStorage.getItem("localData")) :
+    null
+    
+    // console.log(userData.user.firstName)
+    // console.log(this.state.username);
     return (
       <div>
         <Router>
-          <Header />
+          {
+            localStorage.getItem("localData") ?
+              <Header localData={userData} />  :
+              <Header />
+          }
           <Switch>
             <Route path="/" render={
               (props) => {
@@ -160,7 +161,7 @@ class App extends Component {
                   <div>
 
                     {localStorage.getItem("currentUser") !== null ? <Redirect to="/Event"/>  :
-                    <Signup /> }
+                    <Signup successfulLogin={this.handleLoginAuth} /> }
                   </div>
                 )
               }
