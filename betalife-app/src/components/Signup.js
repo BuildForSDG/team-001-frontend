@@ -23,8 +23,8 @@ class Signup extends Component {
       radio: 2,
       startDate: new Date(),
       org: false,
-      toggleShow: "d-block",
-      toggleHide: "d-none",
+      signupError: false,
+      loginError: false,
       role: "",
       firstName: '',
       lastName: "",
@@ -37,6 +37,7 @@ class Signup extends Component {
       sex: 'female',
       photo: ''
     };
+    this.handleLogin = this.handleLogin.bind(this);
   }
 
   doCollapse() {
@@ -122,17 +123,14 @@ class Signup extends Component {
       org: true });
   }
   
-  // handle Phone number change
-  // handleNumberChange = (e) => {
-  //   this.setState({
-  //     phoneNumber: e.target.value
-  //   });
-  //   console.log(e.target.value);
-  // }
+  // Toast  signup successful
+  toastSignup = () => {
+    toast("Signup successful!");
+  }
   
   // Toast  signup successful
-  notify = () => {
-    toast("Signup successful!");
+  toastLogin = () => {
+    toast("Login successful!");
   }
 
   changeHandler = (e) => {
@@ -144,12 +142,14 @@ class Signup extends Component {
   signupSubmit = (e) => {
     axios.post("https://betalife-backend.herokuapp.com/api/auth/signup", this.state)
     .then(response => {
-      console.log(response);
-      if(response.status === 201){      
-      this.notify();
-      setTimeout(() => {
-      this.props.history.push("/events");        
-    }, 4000);
+      if(response.status === 201){  
+        this.setState({
+          signupError: false
+        });
+        this.toastSignup();
+        setTimeout(() => {
+          this.handleLogin();     
+        }, 2000);
       }
       else {
         alert("Could not create new user!");
@@ -157,26 +157,39 @@ class Signup extends Component {
     })
     .catch(error => {
       console.log(error);
+      new Error(error);
+      this.setState({
+        signupError: true
+      });
     });
+  }
     
-    // axios.post("https://betalife-backend.herokuapp.com/api/auth/signup", this.state)
-    // .then(response => {
-    //   this.props.history.push("/events");
-    // })
-    // .catch(error => {
-    //   console.log(error);
-    // });
-  }  
-  
   handleLogin = (e) => {
-    e.preventDefault();
-    this.setState({
-      loggedIn: true,
-      modal4: false,
-      collapse: false
+    axios.post("https://betalife-backend.herokuapp.com/api/auth/login", this.state)
+    .then(response => {
+      console.log(response);
+      if(response.status === 200){  
+        this.setState({
+          loginError: false
+        });
+        const {successfulLogin} = this.props;
+        successfulLogin(response.data);
+        this.toastLogin();
+        setTimeout(() => {
+          this.props.history.push("/events");        
+        }, 3000);
+      }
+      else {
+        alert("Oops! Something went wrong. Check permission!");
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      new Error(error);
+      this.setState({
+        loginError: true
+      });
     });
-    this.doCollapse();
-    this.props.history.push("/events");
   }
 
   render() {
@@ -319,7 +332,20 @@ class Signup extends Component {
                       />
 
                       <MDBFormInline className="my-4">
-                        <MDBInput
+                        Date of Birth: 
+                        <input
+                          className="ml-2"
+                          name="doBirth"
+                          type="date"
+                          min="1960-01-01"
+                          max="2005-12-31"
+                          selected={doBirth}
+                          onSelect={this.handleDateSelect}
+                          onChange={this.changeHandler}
+                          value={doBirth}
+                        />
+
+                        {/* <MDBInput
                           className="d-inline"
                           label="Date of Birth"
                           name="doBirth"
@@ -331,7 +357,7 @@ class Signup extends Component {
                           onSelect={this.handleDateSelect}
                           onChange={this.changeHandler}
                           value={doBirth}
-                        />
+                        /> */}
                         {/* <label className="mr-2">Date of birth</label> */}
 
                         {/* <DatePicker name="doBirth" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
@@ -386,8 +412,11 @@ class Signup extends Component {
                         </label>
                         </div>
                       </div> */}
-
                       <div className="text-center mt-1-half">
+                        {
+                          this.state.signupError === true ?
+                            <p className="text-danger my-2">Something went wrong!</p> : null
+                        }
                         <MDBBtn
                           color="info"
                           className="mb-2"
@@ -400,59 +429,72 @@ class Signup extends Component {
                     </div>
                   </MDBModalBody>
                 </form>
-                </MDBModal>
+              </MDBModal>
 
-                {/* <MDBBtn color="light" className="text-primary" onClick={this.toggle(3)}>
+              {/* <MDBBtn color="light" className="text-primary" onClick={this.toggle(3)}>
                   Login
                   <MDBIcon far icon="user" className="ml-1" />
-                </MDBBtn> */}
+              </MDBBtn> */}
 
-                <MDBBtn href="/events" color="light" className="text-primary">
-                  Login
-                  <MDBIcon far icon="user" className="ml-1" />
-                </MDBBtn>
+              <MDBBtn color="light" className="text-primary" onClick={this.toggle(3)}>
+                Login
+                <MDBIcon far icon="user" className="ml-1" />
+              </MDBBtn>
 
-                {/* <MDBBtn color="light" className="text-primary" href="/events">
+              {/* <MDBBtn color="light" className="text-primary" href="/events">
                   Take a tour
                   <MDBIcon far icon="user" className="ml-1" />
-                </MDBBtn> */}
+              </MDBBtn> */}
 
 
-                <MDBModal isOpen={this.state.modal3} toggle={this.toggle(3)} size="md" cascading>
-                  <MDBModalHeader
-                    toggle={this.toggle(3)}
-                    titleClass="d-inline title"
-                    className="text-center light-blue darken-3 white-text"
-                  >
-                    <MDBIcon icon="user" className="px-3" />
-                    Login Form
-                  </MDBModalHeader>
-                  <MDBModalBody>
-                    <MDBInput label="Your email"
-                      type="email"
-                    />
-                    <MDBInput
-                      label="Your password"
-                      type="password"
-                      iconClass="dark-grey"
-                    />
-                    <div className="text-center mt-1-half">
-                      <MDBBtn
-                        color="info"
-                        className="mb-2"
-                        onClick={this.toggle(3)}
-                      >
-                        login
-                        <MDBIcon icon="paper-plane" className="ml-1" />
-                      </MDBBtn>
-                    </div>
-                  </MDBModalBody>
-                </MDBModal>
+              <MDBModal isOpen={this.state.modal3} toggle={this.toggle(3)} size="md" cascading>
+                <MDBModalHeader
+                  toggle={this.toggle(3)}
+                  titleClass="d-inline title"
+                  className="text-center light-blue darken-3 white-text"
+                >
+                  <MDBIcon icon="user" className="px-3" />
+                  Login Form
+                </MDBModalHeader>
+                <MDBModalBody>
+                  <MDBInput
+                    label="Your email"
+                    name="email"
+                    type="email"
+                    required
+                    onChange={this.changeHandler}
+                    value={email}
+                  />
+                  <MDBInput
+                    label="Your password"
+                    name="password"
+                    type="password"
+                    iconClass="dark-grey"
+                    required
+                    onChange={this.changeHandler}
+                    value={password}
+                  />
+                  <div className="text-center mt-1-half">
+                    {
+                      this.state.loginError === true ?
+                        <p className="text-danger my-2">Something went wrong!</p> : null
+                    }
+                    <MDBBtn
+                      color="info"
+                      className="mb-2"
+                      onClick={this.handleLogin}
+                    >
+                      login
+                      <MDBIcon icon="paper-plane" className="ml-1" />
+                    </MDBBtn>
+                  </div>
+                </MDBModalBody>
+              </MDBModal>
 
-              </MDBContainer>
-            </MDBMask>
-          </MDBView>
-          <ToastContainer pauseOnFocusLoss={true} />
+            </MDBContainer>
+          </MDBMask>
+        </MDBView>
+        <ToastContainer pauseOnFocusLoss={true} />
       </div>
     );
   }
