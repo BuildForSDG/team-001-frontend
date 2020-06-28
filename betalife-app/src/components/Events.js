@@ -11,6 +11,8 @@ import "react-toastify/dist/ReactToastify.css";
 import bgTech from "../images/event_bg1.jpg";
 import bgFashion from "../images/butterfly_bg.jpg";
 
+// page reset attempt
+
 // Events UI
 class Events extends Component {
   constructor(props) {
