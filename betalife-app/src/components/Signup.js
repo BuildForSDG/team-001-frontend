@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router , withRouter, Route, Switch, Redirect, Link } from "react-router-dom";
+import { withRouter} from "react-router-dom";
+// import { BrowserRouter as Router , withRouter, Route, Switch, Redirect, Link } from "react-router-dom";
 
 
 import axios from "axios";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MDBContainer, MDBMask, MDBView, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput, MDBFormInline} from "mdbreact";
@@ -294,7 +293,7 @@ class Signup extends Component {
                         />
                       </fragment>
                       }
-
+                      
                       <MDBInput
                         label="Phone number"
                         name="phoneNumber"
@@ -430,11 +429,6 @@ class Signup extends Component {
                   </MDBModalBody>
                 </form>
               </MDBModal>
-
-              {/* <MDBBtn color="light" className="text-primary" onClick={this.toggle(3)}>
-                  Login
-                  <MDBIcon far icon="user" className="ml-1" />
-              </MDBBtn> */}
 
               <MDBBtn color="light" className="text-primary" onClick={this.toggle(3)}>
                 Login
