@@ -25,6 +25,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 import bgTech from "../images/event_bg1.jpg";
 
+// page reset attempt
+
 // Events UI
 class Events extends Component {
   constructor(props) {
