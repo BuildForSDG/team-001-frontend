@@ -14,35 +14,38 @@ class Funds extends Component {
     super(props);
     this.state = {
       modal5: false,
-      funds: [],
-      _id: '',
+      hideAddDetail: false,
+      fundsError: false,
+      userId: 
+        JSON.parse(localStorage.getItem("localData")).user.userId,
       title: '',
       description: '',
       website: '',
-      fundingBody: ''
+      fundingBody: '',
+      funds: [],
     };
     this.changeHandler = this.changeHandler.bind(this);
     this.newFundSubmit = this.newFundSubmit.bind(this);
   }
   
   componentDidMount() {
-    this.getfunds();
+    this.getFunds();
   }
   
-  // add funds UI
+  // add funds form 
   toggle = (nr) => () => {
     if (nr === 5) {
       this.setState({
         modal5: !this.state.modal5
       });
     }
-  }
+  }  
   
-  getfunds = () => {
-    axios.get('http://localhost:4000/api/funds')
+  getFunds = () => {
+    axios.get('https://betalife-backend.herokuapp.com/api/funds')
     .then(response => {
       if(response.status === 200) {
-        console.log(response)
+        // console.log(response)
         // "Oops! Somthing went wrong."
         this.setState({
           funds: response.data
@@ -62,30 +65,137 @@ class Funds extends Component {
   });
   }
   
-  newFundSubmit = (e) => {
-    console.log("inside newFundSubmit function");
+  // function for displaying Update Event form 
+  showUpdateForm = (e, fundUpdate) => {
     e.preventDefault();
     this.setState({
-      modal5: false      
-    });        
-    axios.post('http://localhost:4000/api/funds', this.state)
-    .then(response => {
-      console.log(response);
-      if(response.status === 201) {
-      }
-      else {
-        alert("could not post data");
-      }
-    })
-    .catch( error => error); 
-    // console.log(this.state);
+      modal5: !this.state.modal5
+    });
   }
   
-  // BE SURE AUTO TO ADD USERiD (IE _ID) to new events and funds during creation.
-
-  render() {
+  toastFundDelete = () => {
+    toast("Deletee Fund successful !");
+  }
+  
+  deleteFund = (e, fundDelete) => {
+    e.preventDefault();
+    console.log(fundDelete._id);
+    let tokenId = JSON.parse(localStorage.getItem("localData"));
+    const token = tokenId.user.token;    
+      axios.delete(`https://betalife-backend.herokuapp.com/api/funds/${fundDelete._id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`          
+        }
+      })
+      .then(response => {
+        console.log("inside newFundSubmit function", this.state);
+        if(response.status === 200) { 
+        this.toastFundDelete();
+          window.location.reload(true);
+        }
+        else {
+          alert("Delete failed !");
+        }
+      })
+      .catch( error => {
+        console.log(error);      
+        new Error(error);
+        this.setState({
+          fundsError: true
+        });
+      });
+  }
+  
+  toastFundUpdate = () => {
+    toast("Update Fund successful !");
+  }  
+  
+  updateFundSubmit = (e, fundUpdate) => {
+    e.preventDefault();
+    let tokenId = JSON.parse(localStorage.getItem("localData"));
+    const token = tokenId.user.token;
+      e.preventDefault();     
+      axios.put(`https://betalife-backend.herokuapp.com/api/funds/${this.state.id}`, this.state, {
+        headers: {
+          "Authorization": `Bearer ${token}`          
+        }
+      })
+      .then(response => {
+        console.log("inside newFundSubmit function", this.state);
+        if(response.status === 201) { 
+        this.toastFundUpdate();
+          window.location.reload(true);
+          // this.setState({
+          //   fundsError: false,
+          //   modal5: !this.state.modal5,
+          //   hideAddDetail: false,
+          //   title: '',
+          //   description: '',
+          //   website: '',
+          //   fundingBody: '',
+          //   id: ''
+          // });
+          // setTimeout(() => {
+          //   this.getFunds();        
+          // }, 2000);
+        }
+        else {
+          alert("could not post data !");
+        }
+      })
+      .catch( error => {
+        console.log(error);      
+        new Error(error);
+        this.setState({
+          fundsError: true
+        });
+      });
+  }
+    
+  // Toast  signup successful
+  toastFundPost = () => {
+    toast("Add Funding successful!");
+  }
+  
+  newFundSubmit = (e) => {
+  let tokenId = JSON.parse(localStorage.getItem("localData"));
+  const token = tokenId.user.token;
+    console.log("inside newFundSubmit function");
+    e.preventDefault();     
+    axios.post('https://betalife-backend.herokuapp.com/api/funds', this.state, {
+      headers: {
+        "Authorization": `Bearer ${token}`          
+      }
+    })
+    .then(response => {
+      console.log(response);
+      if(response.status === 201) {  
+        this.setState({
+          fundsError: false,
+          modal5: !this.state.modal5
+        });
+        this.toastFundPost();
+        setTimeout(() => {
+          this.getFunds();        
+        }, 2000);
+      }
+      else {
+        alert("could not post data !");
+      }
+    })
+    .catch( error => {
+      console.log(error);      
+      new Error(error);
+      this.setState({
+        fundsError: true
+      });
+    });
+  }
+  
+  render() {    
+      // console.log(JSON.parse(localStorage.getItem("localData")).user.userId);
     const { funds } = this.state;
-    const { _id, title, description, website, fundingBody } = this.state
+    const { title, description, website, fundingBody } = this.state
     return (
       <div>
         <div className="row mt-4 pt-5">
@@ -96,7 +206,9 @@ class Funds extends Component {
               className="float-right"
               onClick={this.toggle(5)}
             >
-              <MDBIcon icon="money-bill-wave" onClick={this.toggle(5)} className="mr-2" />
+              <MDBIcon icon="money-bill-wave" onClick={() => {
+                this.toggle(5)
+                this.setState({ hideAddDetail: true });}} className="mr-2" />
               Add Fund
             </MDBBtn>
             <input type="text" placeholder="Search funds" className="form-control float-left" />
@@ -124,73 +236,155 @@ class Funds extends Component {
                       </h5>
                     </a>
                   </MDBCardBody>
+                  <div className="rounded-bottom mdb-color lighten-3 text-center py-1 px-2">
+                    <ul className="list-unstyled list-inline font-small">
+                      <li className="list-inline-item pr-2 white-text float-left pl-1">
+                        {/* <MDBIcon far icon="clock" /> Last updated {event.createdDate} */}
+                      </li>
+
+                      {/* delete event button */}
+                      <li className="list-inline-item float-right pr-1">
+                        <a href="#" className="text-danger" onClick={(e) => {
+                          const fundDelete = fund;
+                          return (
+                            this.deleteFund(e, fundDelete)
+                          )}}>  
+                          <MDBIcon far icon="trash-alt" />
+                        </a>
+                      </li>
+
+                      {/* update event button */}
+                      <li className="list-inline-item float-right pr-2">
+                        <a href="#" className="white-text" onClick={(e) => {
+                          this.setState({
+                            hideAddDetail: true,
+                            title: fund.title,
+                            description: fund.description,
+                            website: fund.website,
+                            fundingBody: fund.fundingBody,
+                            id: fund._id
+                          });
+                          const fundUpdate = fund;
+                          return (
+                            this.showUpdateForm(e, fundUpdate)
+                          )
+                        }}>              
+                          <MDBIcon far icon="edit" />
+                        </a>
+                      </li>
+
+                      {/* share button */}
+                      <li className="list-inline-item pr-2 float-right">
+                        <a href="#!" className="white-text">
+                          <MDBIcon icon="share-alt" className="mr-1" />
+                        </a>
+                      </li>
+
+                      {/* like button */}
+                      <li className="list-inline-item float-right px-2">
+                        <a href="#!" className="white-text">
+                          <MDBIcon color="white" fab icon="gratipay" className="pink-text mr-1" />
+                          {/* {event.like} */}
+                        </a>
+                      </li>
+
+                    </ul>
+                  </div>
+
+                  {/* Add/ Update fund form Modal */}
+                  <MDBModal isOpen={this.state.modal5} toggle={this.toggle(5)} size="lg" cascading>
+                    <MDBModalHeader
+                      toggle={this.toggle(5)}
+                      titleClass="d-inline title"
+                      className="text-center light-blue darken-3 white-text"
+                    ><MDBIcon />
+                      <MDBIcon icon="calendar-check" className="px-3" />
+                      { this.state.hideAddDetail === false ? "Add Funding Body" :
+                      "Edit Funding Body" }
+                    </MDBModalHeader>
+                    <MDBModalBody>
+                      <div className="text-left">
+                        <form>
+                          <MDBInput
+                            label="Fund Title"
+                            name="title"
+                            type="text"
+                            iconClass="dark-grey"
+                            onChange={this.changeHandler}
+                            value={title}
+                          />
+                          <MDBInput
+                            label="Description"
+                            name="description"
+                            type="text"
+                            iconClass="dark-grey"
+                            onChange={this.changeHandler}
+                            value={description}
+                          />
+                          <MDBInput
+                            label="website"
+                            name="website"
+                            type="text"
+                            iconClass="dark-grey"
+                            onChange={this.changeHandler}
+                            value={website}
+                          />
+                          <MDBInput
+                            className="d-inline"
+                            label="Funding Body"
+                            name="fundingBody"
+                            type="text"
+                            iconClass="dark-grey"
+                            onChange={this.changeHandler}
+                            value={fundingBody}
+                          />
+                          <div className="text-center mt-1-half">
+                            {/* show error message if form can't submit */}
+                            {/* {console.log(fund.title)} */}
+                            {
+                              this.state.fundsError === true ?
+                                <p className="text-danger my-2">Something went wrong!</p> : null
+                            }
+
+                            {/* show Add or Edit fund buttom based on state */}
+                            { this.state.hideAddDetail === false ?
+                              <MDBBtn
+                                color="info"
+                                type ="submit"
+                                className="mb-2"
+                                onClick={this.newFundSubmit}
+                              >
+                                Create
+                                <MDBIcon icon="paper-plane" className="ml-1" />
+                              </MDBBtn> :
+                              <MDBBtn
+                                color="info"
+                                type ="submit"
+                                className="mb-2"
+                                onClick={(e) => {
+                                  const fundUpdate = fund;
+                                  return (
+                                    this.updateFundSubmit(e,fundUpdate)
+                                  )
+                                }}
+                              >
+                                Update
+                                <MDBIcon icon="paper-plane" className="ml-1" />
+                              </MDBBtn> }
+                          </div>
+                        </form>
+                      </div>
+                    </MDBModalBody>
+                  </MDBModal>
+                  {/* end of add/ update form modal */}
+
                 </MDBCard>
               </MDBCol>
             })
             }
-
-            {/* Add funding body Modal */}
-            <MDBModal isOpen={this.state.modal5} toggle={this.toggle(5)} size="lg" cascading>
-              <MDBModalHeader
-                toggle={this.toggle(5)}
-                titleClass="d-inline title"
-                className="text-center light-blue darken-3 white-text"
-              ><MDBIcon />
-                <MDBIcon icon="calendar-check" className="px-3" />
-                Add Funding body
-              </MDBModalHeader>
-              <MDBModalBody>
-                <div className="text-left">
-                  <form onSubmit={this.newFundSubmit}>
-                    <MDBInput
-                      label="Fund Title"
-                      name="title"
-                      type="text"
-                      iconClass="dark-grey"
-                      onChange={this.changeHandler}
-                      value={title}
-                    />
-                    <MDBInput
-                      label="Description"
-                      name="description"
-                      type="text"
-                      iconClass="dark-grey"
-                      onChange={this.changeHandler}
-                      value={description}
-                    />
-                    <MDBInput
-                      label="website"
-                      name="website"
-                      type="text"
-                      iconClass="dark-grey"
-                      onChange={this.changeHandler}
-                      value={website}
-                    />
-                    <MDBInput
-                      className="d-inline"
-                      label="Funding Body"
-                      name="fundingBody"
-                      type="text"
-                      iconClass="dark-grey"
-                      onChange={this.changeHandler}
-                      value={fundingBody}
-                    />
-                    <div className="text-center mt-1-half">
-                      <MDBBtn
-                        color="info"
-                        type ="submit"
-                        className="mb-2"
-                      >
-                        Create
-                        <MDBIcon icon="paper-plane" className="ml-1" />
-                      </MDBBtn>
-                    </div>
-                  </form>
-                </div>
-              </MDBModalBody>
-            </MDBModal>
           </MDBRow>
         </div>
+        <ToastContainer pauseOnFocusLoss={true} />
       </div>
     );
   }

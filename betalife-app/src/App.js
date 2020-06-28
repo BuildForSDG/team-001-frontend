@@ -139,7 +139,7 @@ class App extends Component {
   }
 // ping
   render() {    
-    console.log(JSON.parse(localStorage.getItem("localData")));
+    // console.log(JSON.parse(localStorage.getItem("localData")));
     
     const userData = localStorage.getItem("localData") ? JSON.parse(localStorage.getItem("localData")) :
     null
