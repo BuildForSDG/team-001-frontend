@@ -6,7 +6,7 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(async (config) => {
-  const token = "get token from offline store";
+  const token = JSON.parse(localStorage.getItem("localData"));
 
   if (!token) {
     return config;
@@ -14,7 +14,7 @@ axiosInstance.interceptors.request.use(async (config) => {
 
   return {
     ...config,
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token.user.token}` },
   };
 });
 
