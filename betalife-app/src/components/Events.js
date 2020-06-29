@@ -210,7 +210,7 @@ class Events extends Component {
   getEvents = () => {
     // fetch data here
     axios
-      .get(`${process.env.REACT_APP_BASE_URL}/api/events`)
+      .get(`https://betalife-backend.herokuapp.com/api/events`)
       .then((response) => {
         // console.log(response);
         if (response.status === 200) {
@@ -289,7 +289,7 @@ class Events extends Component {
     e.preventDefault();
 
     axios({
-      url: `${process.env.REACT_APP_BASE_URL}/api/events/${this.state.updateEvent._id}`,
+      url: `https://betalife-backend.herokuapp.com/api/events/${this.state.updateEvent._id}`,
       data: this.state.updateEvent,
       method: "PUT",
       headers: {
