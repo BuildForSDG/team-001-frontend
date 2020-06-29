@@ -288,12 +288,14 @@ class Events extends Component {
   updateEventSubmit = (e) => {
     e.preventDefault();
 
+    let token = JSON.parse(localStorage.getItem("localData"));
+
     axios({
       url: `https://betalife-backend.herokuapp.com/api/events/${this.state.updateEvent._id}`,
       data: this.state.updateEvent,
       method: "PUT",
       headers: {
-        authorization: "bearer insert user token",
+        authorization: `Bearer ${token.user.token}`,
       },
     })
       .then((response) => {
