@@ -391,111 +391,107 @@ class Events extends Component {
                 md="10"
                 className="text-center mx-auto mb-2"
               >
-                <div className="text-white text-center d-flex align-items-center rgba-black-strong py-2 px-4">
-                  <div className="w-100">
-                    <h5 className="light-blue-text pt-2">
-                      <MDBIcon icon="chart-pie" className="capitalize" />
-                      {event.industry.length > 31
-                        ? event.industry.substr(0, 31 - 1) + "..."
-                        : event.industry}
-                    </h5>
-                    <MDBCardTitle tag="h3" className="pt-2">
-                      <strong>
-                        {/* truncate long title */}
-                        {event.title.length > 26
-                          ? event.title.substr(0, 26 - 1) + "..."
-                          : event.title}
-                      </strong>
-                    </MDBCardTitle>
-                    <p>
-                      {/* truncate long description */}
-                      {event.description.length > 60
-                        ? event.description.substr(0, 60 - 1) + "..."
-                        : event.description}
-                    </p>
-                    <a href="#">
-                      <h6> {event.organizerId} </h6>
-                    </a>
+                <MDBCard
+                  className="card-image"
+                  style={{
+                    backgroundImage: `url( ${bgTech} )`,
+                  }}
+                >
+                  <div className="text-white text-center d-flex align-items-center rgba-black-strong py-2 px-4">
+                    <div className="w-100">
+                      <h5 className="light-blue-text pt-2">
+                        <MDBIcon icon="chart-pie" className="capitalize" />
+                        {event.industry.length > 31
+                          ? event.industry.substr(0, 31 - 1) + "..."
+                          : event.industry}
+                      </h5>
+                      <MDBCardTitle tag="h3" className="pt-2">
+                        <strong>
+                          {/* truncate long title */}
+                          {event.title.length > 26
+                            ? event.title.substr(0, 26 - 1) + "..."
+                            : event.title}
+                        </strong>
+                      </MDBCardTitle>
+                      <p>
+                        {/* truncate long description */}
+                        {event.description.length > 60
+                          ? event.description.substr(0, 60 - 1) + "..."
+                          : event.description}
+                      </p>
+                      <a href="#">
+                        <h6> {event.organizerId} </h6>
+                      </a>
 
-                    <MDBBtn
-                      color="primary"
-                      onClick={(e) => {
-                        const detailContainer = event;
-                        return this.handleViewEventDetail(e, detailContainer);
-                      }}
-                    >
-                      <MDBIcon icon="clone left" /> View
-                    </MDBBtn>
-
-                    <MDBBtn
-                      color="primary"
-                      onClick={(e) => {
-                        const detailContainer = event;
-                        return this.handleViewEventDetail(e, detailContainer);
-                      }}
-                    >
-                      <MDBIcon icon="clone left" /> View
-                    </MDBBtn>
+                      <MDBBtn
+                        color="primary"
+                        onClick={(e) => {
+                          const detailContainer = event;
+                          return this.handleViewEventDetail(e, detailContainer);
+                        }}
+                      >
+                        <MDBIcon icon="clone left" /> View
+                      </MDBBtn>
+                    </div>
                   </div>
-                </div>
-                <div className="rounded-bottom mdb-color lighten-3 text-center py-1 px-2">
-                  <ul className="list-unstyled list-inline font-small">
-                    <li className="list-inline-item pr-2 white-text float-left pl-1">
-                      <MDBIcon far icon="clock" /> Last updated{" "}
-                      {event.createdDate}
-                    </li>
+                  <div className="rounded-bottom mdb-color lighten-3 text-center py-1 px-2">
+                    <ul className="list-unstyled list-inline font-small">
+                      <li className="list-inline-item pr-2 white-text float-left pl-1">
+                        <MDBIcon far icon="clock" /> Last updated{" "}
+                        {event.createdDate}
+                      </li>
 
-                    {/* delete event button */}
-                    <li className="list-inline-item float-right pr-1">
-                      <a
-                        href="#"
-                        className="white-text"
-                        onClick={(e) => {
-                          const eventId = event;
-                          return this.deleteEvent(e, eventId);
-                        }}
-                      >
-                        <MDBIcon far icon="trash-alt" />
-                      </a>
-                    </li>
+                      {/* delete event button */}
+                      <li className="list-inline-item float-right pr-1">
+                        <a
+                          href="#"
+                          className="white-text"
+                          onClick={(e) => {
+                            const eventId = event;
+                            return this.deleteEvent(e, eventId);
+                          }}
+                        >
+                          <MDBIcon far icon="trash-alt" />
+                        </a>
+                      </li>
 
-                    {/* update event button */}
-                    <li className="list-inline-item float-right pr-1">
-                      <a
-                        href="#"
-                        className="white-text"
-                        onClick={(e) => {
-                          const eventId = event;
-                          return this.handleViewUpdate(e, eventId);
-                        }}
-                      >
-                        <MDBIcon far icon="edit" />
-                      </a>
-                    </li>
+                      {/* update event button */}
+                      <li className="list-inline-item float-right pr-1">
+                        <a
+                          href="#"
+                          className="white-text"
+                          onClick={(e) => {
+                            const eventId = event;
+                            return this.handleViewUpdate(e, eventId);
+                          }}
+                        >
+                          <MDBIcon far icon="edit" />
+                        </a>
+                      </li>
 
-                    {/* share button */}
-                    <li className="list-inline-item pl-2 float-right">
-                      <a href="#!" className="white-text">
-                        <MDBIcon icon="share-alt" className="mr-2" />
-                        Share
-                      </a>
-                    </li>
+                      {/* share button */}
+                      <li className="list-inline-item pl-2 float-right">
+                        <a href="#!" className="white-text">
+                          <MDBIcon icon="share-alt" className="mr-2" />
+                          Share
+                        </a>
+                      </li>
 
-                    {/* like button */}
-                    <li className="list-inline-item float-right pr-1">
-                      <a href="#!" className="white-text">
-                        <MDBIcon
-                          color="white"
-                          fab
-                          icon="gratipay"
-                          className="pink-text mr-1"
-                        />
-                        {event.like}
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                {/* </MDBCard> */}
+                      {/* like button */}
+                      <li className="list-inline-item float-right pr-1">
+                        <a href="#!" className="white-text">
+                          <MDBIcon
+                            color="white"
+                            fab
+                            icon="gratipay"
+                            className="pink-text mr-1"
+                          />
+                          {event.like}
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </MDBCard>
               </MDBCol>
             );
           })}
