@@ -19,6 +19,7 @@ import {
 } from "mdbreact";
 
 import axios from "axios";
+import customAxios from "../utils/axios";
 import DatePicker from "react-datepicker";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -288,13 +289,12 @@ class Events extends Component {
   updateEventSubmit = (e) => {
     e.preventDefault();
 
-    axios({
+    let token = JSON.parse(localStorage.getItem("localData"));
+
+    customAxios({
       url: `https://betalife-backend.herokuapp.com/api/events/${this.state.updateEvent._id}`,
       data: this.state.updateEvent,
       method: "PUT",
-      headers: {
-        authorization: "bearer insert user token",
-      },
     })
       .then((response) => {
         if (response.status === 201) {
