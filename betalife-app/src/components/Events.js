@@ -297,7 +297,7 @@ class Events extends Component {
       .then((response) => {
         if (response.status === 201) {
         } else {
-          alert("could not post data");
+          alert("could not update data");
         }
 
         this.getEvents();
@@ -309,8 +309,22 @@ class Events extends Component {
   };
 
   //  delete Event function
-  deleteEvent = (e, eventId) => {
+  deleteEvent = (e, event) => {
     e.preventDefault();
+
+    customAxios({
+      url: `https://betalife-backend.herokuapp.com/api/events/${event._id}`,
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.status === 200) {
+        } else {
+          alert("could not delete data");
+        }
+
+        this.getEvents();
+      })
+      .catch((error) => console.log(error));
     // // const id = this.state.id;
     // this.setState({ id: eventId.id})
     // axios.delete('api/events', {data: {id: this.state.id}})
