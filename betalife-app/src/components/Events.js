@@ -289,8 +289,6 @@ class Events extends Component {
   updateEventSubmit = (e) => {
     e.preventDefault();
 
-    let token = JSON.parse(localStorage.getItem("localData"));
-
     customAxios({
       url: `https://betalife-backend.herokuapp.com/api/events/${this.state.updateEvent._id}`,
       data: this.state.updateEvent,
