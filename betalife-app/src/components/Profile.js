@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { withRouter, Link } from "react-router-dom";
 
-// import DatePicker from "react-datepicker";
+import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
+import "react-toastify/dist/ReactToastify.css";
 
 import { MDBCard, MDBCardBody, MDBCardUp, MDBAvatar, MDBCardImage, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput } from "mdbreact";
 
@@ -14,7 +15,9 @@ class Profile extends Component {
     this.state = {
       modal2: false,
       radio: 2,
-      startDate: new Date()
+      startDate: new Date(),
+      password: '',
+      imageUrl: ''
     }
 
   }// nr represents modal number
@@ -52,6 +55,10 @@ class Profile extends Component {
   }
 
   render() {
+    const userData = JSON.parse(localStorage.getItem("localData"));
+    console.log(userData);
+    const { password, imageUrl } = this.state;
+    
   return (
     <div>
       <div className="row mt-4 pt-5">
@@ -64,13 +71,17 @@ class Profile extends Component {
                   <img src={photo} className="figure-img img-fluid z-depth-1"
                     alt="" style={{ width: "400px" }} />
                   <figcaption className="figure-caption text-center">
-                    userid-0021
+                    {userData.user.role === 'admin' ?
+                    userData.user.adminId :
+                    userData.user.userId}
                   </figcaption>
                 </figure>
 
                 <MDBCardBody>
-                  <h4 className="card-title">Emana Okoro </h4>
-                  <fragment className="btn-group text-center my-2">
+                  <h4 className="card-title">
+                    {`${userData.user.firstName} ${userData.user.lastName}`}
+                  </h4>
+                  {/* <fragment className="btn-group text-center my-2">
                     <MDBBtn color="primary" className="px-3" onClick={this.handleMyEvents}>
                       My Events
                       <MDBIcon  far icon="calendar-check" className="ml-2" />
@@ -79,16 +90,30 @@ class Profile extends Component {
                       Messages
                       <MDBIcon icon="comment-alt" className="text-primary ml-2" />
                     </MDBBtn>
-                  </fragment>
+                  </fragment> */}
 
-                  <p><strong>Role</strong>: Trainee</p>
-                  <p><strong>Sex</strong>: Female</p>
-                  <p><strong>Phone No</strong>: 234806000122</p>
-                  <p><strong>Email</strong>: annO@yahoo.com</p>
-                  <p><strong>location</strong>: Abuja, NIgeria</p>
+                  <p><strong>Role</strong>: {userData.user.role}</p>
+                  <p><strong>Sex</strong>: {userData.user.sex}</p>
+                  <p><strong>Phone No</strong>: 
+                    {userData.user.phoneNumber === '' ?
+                    "none" :
+                    userData.user.phoneNumber }
+                  </p>
+                  <p><strong>Email</strong>:
+                    { userData.user.email }
+                  </p>
+                  <p><strong>location</strong>: 
+                    {userData.user.city === '' ?
+                    "none" :
+                    userData.user.city }
+                  </p>
                   {/* <MDBIcon color="primary" icon="map-marker-alt" /> */}
-                  <p><strong>Country</strong>: Nigeria</p>
-                  <p><strong>Date of Birth</strong>: 29/05/1002</p>
+                  <p><strong>Country</strong>:
+                    {userData.user.country ===  null ?
+                    "none" :
+                    userData.user.country }
+                  </p>
+                  <p><strong>Date of Birth</strong>: { userData.user.country }</p>
 
                   <a href="#" onClick={this.toggle(2)}>
                     <small className="pb-2">Edit profile</small>
@@ -129,8 +154,20 @@ class Profile extends Component {
                         /> */}
                         <MDBInput
                           label="Your password"
+                          name="password"
                           type="password"
                           iconClass="dark-grey"
+                          omChange={this.changeHandle}
+                          value={password}
+                        />
+
+                        <MDBInput
+                          label="Add imgae url"
+                          name="imageUrl"
+                          type="password"
+                          iconClass="dark-grey"
+                          omChange={this.changeHandle}
+                          value={imageUrl}
                         />
 
                         {/* <MDBInput
@@ -148,7 +185,7 @@ class Profile extends Component {
                           />
                         </MDBFormInline> */}
 
-                        <fragment className="form-check-inline mb-3">
+                        {/* <fragment className="form-check-inline mb-3">
                           <label className="mr-5">Sex</label>
                           <MDBInput
                             gap
@@ -170,7 +207,7 @@ class Profile extends Component {
                             size="sm"
                             containerClass="mr-3"
                           />
-                        </fragment>
+                        </fragment> */}
 
                         <div className="input-group mb-4">
                           <div className="input-group-prepend">
