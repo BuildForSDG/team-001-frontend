@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { withRouter} from "react-router-dom";
 // import { BrowserRouter as Router , withRouter, Route, Switch, Redirect, Link } from "react-router-dom";
 
-
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 import { MDBContainer, MDBMask, MDBView, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput, MDBFormInline} from "mdbreact";
 
 import loginBg from "../images/buildings.jpg";
@@ -67,12 +67,6 @@ class Signup extends Component {
       this.doCollapse();
     }
   }
-
-  // handleRadio = (nr) => () => {
-  //   this.setState({
-  //     radio: nr
-  //   });
-  // }
   
   handleRadio = (nr) => () => {
     if (nr === 1) {

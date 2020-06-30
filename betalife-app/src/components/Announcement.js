@@ -526,7 +526,7 @@ class Announcement extends Component {
                           {
                             this.state.announcementsError === true ?
                               <MDBAlert color="danger">
-                                <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                                <strong>Oops!</strong> Something went wrong
                               </MDBAlert> : null
                           }
                           <MDBBtn

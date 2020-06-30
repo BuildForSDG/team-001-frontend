@@ -88,7 +88,6 @@ class Funds extends Component {
         }
       })
       .then(response => {
-        console.log("inside newFundSubmit function", this.state);
         if(response.status === 200) { 
         this.toastFundDelete();
           window.location.reload(true);
@@ -125,19 +124,6 @@ class Funds extends Component {
         if(response.status === 201) { 
         this.toastFundUpdate();
           window.location.reload(true);
-          // this.setState({
-          //   fundsError: false,
-          //   modal5: !this.state.modal5,
-          //   hideAddDetail: false,
-          //   title: '',
-          //   description: '',
-          //   website: '',
-          //   fundingBody: '',
-          //   id: ''
-          // });
-          // setTimeout(() => {
-          //   this.getFunds();        
-          // }, 2000);
         }
         else {
           alert("could not post data !");
@@ -160,7 +146,6 @@ class Funds extends Component {
   newFundSubmit = (e) => {
   let tokenId = JSON.parse(localStorage.getItem("localData"));
   const token = tokenId.user.token;
-    console.log("inside newFundSubmit function");
     e.preventDefault();     
     axios.post('https://betalife-backend.herokuapp.com/api/funds', this.state, {
       headers: {
@@ -168,7 +153,6 @@ class Funds extends Component {
       }
     })
     .then(response => {
-      console.log(response);
       if(response.status === 201) {  
         this.setState({
           fundsError: false,
@@ -218,9 +202,9 @@ class Funds extends Component {
               return <MDBCol key={fund._id} md="12" className="text-center mb-2">
                 <MDBCard>
                   <MDBCardBody className='elegant-color white-text rounded-bottom'>
-                    <a href='#!' className='activator waves-effect waves-light mr-4'>
+                    {/* <a href='#!' className='activator waves-effect waves-light mr-4'>
                       <MDBIcon icon='share-alt' className='white-text' />
-                    </a>
+                    </a> */}
                     <MDBCardTitle>{fund.title}</MDBCardTitle>
                     <hr className='hr-light' />
                     <MDBCardText className='white-text'>
@@ -340,7 +324,6 @@ class Funds extends Component {
                           />
                           <div className="text-center mt-1-half">
                             {/* show error message if form can't submit */}
-                            {/* {console.log(fund.title)} */}
                             {
                               this.state.fundsError === true ?
                                 <p className="text-danger my-2">Something went wrong!</p> : null

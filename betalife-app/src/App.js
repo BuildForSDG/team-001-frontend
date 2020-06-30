@@ -53,7 +53,6 @@ class App extends Component {
   
   handleLoginAuth = (data) => { 
     this.setState({
-    // collapse: false,
     loggedIn: true,
     user: data
     });   
@@ -69,9 +68,6 @@ class App extends Component {
     e.preventDefault();
     this.setState({
       loggedIn: false,
-      // // showEventPg: "d-block",
-      // // showSignupPg: "d-none",
-      // redirect: "/Signup"
     });
     // localStorage.setItem("currentState", JSON.stringify(this.state));
     this.doCollapse();
@@ -105,23 +101,7 @@ class App extends Component {
       modal3: !this.state.modal3
       });
     }
-    // else if (nr === 4){
-    //   this.setState({
-    //     modal4: !this.state.modal4
-    //   });
-    //   this.doCollapse();
-    // }
   }
-
-  // handleDisplay = () => {
-  //   // localStorage.setItem("currentState", JSON.stringify(this.state));
-  //   // localStorage.clear();
-  //   // this.setState({
-  //   //   // showEventPg: "d-block",
-  //   //   // showSignupPg: "d-none",
-  //   // });
-  //   this.doCollapse();
-  // }  
 
   closeNav = (e) => {
     // e.preventDefault();
@@ -151,8 +131,8 @@ class App extends Component {
         <Router>
           {
             localStorage.getItem("localData") ?
-              <Header localData={userData} />  :
-              <Header />
+              <Header localData={userData} successfulLogin={this.handleLoginAuth} />  :
+              <Header successfulLogin={this.handleLoginAuth} />
           }
           <Switch>
             <Route path="/" render={
