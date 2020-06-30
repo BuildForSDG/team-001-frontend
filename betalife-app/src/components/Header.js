@@ -1,7 +1,12 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router , withRouter } from "react-router-dom";
 
-import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput, MDBBadge } from "mdbreact";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput, MDBBadge,
+MDBAlert } from "mdbreact";
 
 class Header extends Component {
   constructor(props) {
@@ -13,9 +18,9 @@ class Header extends Component {
       modal2: false,
       modal3: false,
       modal4: false,
-      radio: 2,
-      startDate: new Date(),
-      org: false,
+      email: '',
+      password: '',
+      role: 'admin',
       loggedIn: false,
       name: '',
       redirect: null
@@ -67,16 +72,6 @@ class Header extends Component {
     });
   }
   
-  // checkUser = () => {
-  //   if (localStorage.getItem("localData")) {
-  //     this.setState({
-  //     username: JSON.parse(localStorage.getItem("localData")).user.firstName })
-  //   }
-  //   else {}
-  //   console.log(this.state.username);
-  // }
-
-  // nr represents modal number
   toggle = (nr) => (e) => {
     e.preventDefault();
 
@@ -97,12 +92,6 @@ class Header extends Component {
       });
       this.doCollapse();
     }
-  }
-
-  handleRadio = (nr) => () => {
-    this.setState({
-      radio: nr
-    });
   }
   
   // handle showing events. Collapse navbar
@@ -129,16 +118,49 @@ class Header extends Component {
     this.doCollapse();
     this.props.history.push("/profile");
   }
-
-  handleAdminLogin = (e) => {
-    e.preventDefault();
+  
+  changeHandler = (e) => {
     this.setState({
-      loggedIn: true,
-      modal4: false,
-      collapse: false
+      [e.target.name]: e.target.value
     });
-    this.doCollapse();
-    this.props.history.push("/Dashboard");
+  }  
+  toastLogin = () => {
+    toast("Admin login successful!");
+  }
+  
+  handleAdminLogin = (e) => {
+    axios.post("https://betalife-backend.herokuapp.com/api/auth/admin/login", this.state)
+    .then(response => {
+      console.log(this.state);
+      console.log(response);
+      if(response.status === 200){  
+        this.setState({
+          loginError: false,
+          loggedIn: true,
+          modal4: false,
+          collapse: false
+        });
+        // this.doCollapse();
+        const {successfulLogin} = this.props;
+        successfulLogin(response.data);
+        this.toastLogin();
+        setTimeout(() => {
+          this.props.history.push("/events");        
+        }, 1000);
+      }
+      else {
+        this.setState({
+          loginError: true
+        });
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      new Error(error);
+      this.setState({
+        loginError: true
+      });
+    });
   }
 
   handleAbout = (e) => {
@@ -162,6 +184,7 @@ class Header extends Component {
   render() {
     const localData = localStorage.getItem("localData") ? JSON.parse(localStorage.getItem("localData")).user.firstName :
     null
+    const { email, password } = this.state;
     // console.log(this.props.localData.user.firstName);
     return (
       <div>
@@ -211,15 +234,29 @@ class Header extends Component {
                       Admin Login
                     </MDBModalHeader>
                     <MDBModalBody>
-                      <MDBInput label="Your email"
+                      <MDBInput
+                        label="Admin email"
+                        name="email"
                         type="email"
+                        onChange={this.changeHandler}
+                        value={email}
                       />
                       <MDBInput
-                        label="Your password"
+                        label="Password"
+                        name="password"
                         type="password"
                         iconClass="dark-grey"
+                        onChange={this.changeHandler}
+                        value={password}
                       />
                       <div className="text-center mt-1-half">
+                        {
+                          this.state.loginError === true ?
+                            <MDBAlert color="danger">
+                              <strong>Oops!</strong> Something went wrong.
+                            </MDBAlert> : null
+                        }
+
                         <MDBBtn
                           color="info"
                           className="mb-2"
@@ -261,10 +298,10 @@ class Header extends Component {
                           {/* <MDBIcon icon="sign-out-alt" /> */}
                         </MDBNavLink>
                       </MDBNavItem>
-                    </MDBNavbarNav> :
-                    <MDBNavLink to="#" onClick={this.handleLogin}> Log in
-                      {/* <MDBIcon icon="sign-in-alt" /> */}
-                    </MDBNavLink>
+                    </MDBNavbarNav> : null
+                    // <MDBNavLink to="#" onClick={this.handleLogin}> Log in
+                    //   {/* <MDBIcon icon="sign-in-alt" /> */}
+                    // </MDBNavLink>
                   }
                 </MDBNavItem>
 
@@ -272,6 +309,7 @@ class Header extends Component {
             </MDBCollapse>
           </MDBNavbar>
 
+          <ToastContainer pauseOnFocusLoss={true} />
         </header>
       </div>
     );
