@@ -120,7 +120,6 @@ class Funds extends Component {
         }
       })
       .then(response => {
-        console.log("inside newFundSubmit function", this.state);
         if(response.status === 201) { 
         this.toastFundUpdate();
           window.location.reload(true);

@@ -180,7 +180,6 @@ class Announcement extends Component {
   
   deleteAnnouncement = (e, announcementDelete) => {
     e.preventDefault();
-    console.log(announcementDelete._id);
     let tokenId = JSON.parse(localStorage.getItem("localData"));
     const token = tokenId.user.token;    
       axios.delete(`https://betalife-backend.herokuapp.com/api/announcement/${announcementDelete._id}`, {
