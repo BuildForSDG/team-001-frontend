@@ -3,26 +3,32 @@ import { withRouter, Link } from "react-router-dom";
 
 import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { MDBCard, MDBCardBody, MDBCardUp, MDBAvatar, MDBCardImage, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput } from "mdbreact";
+import { MDBCard, MDBCardBody, MDBCardUp, MDBAvatar, MDBCardImage, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBInput, MDBAlert } from "mdbreact";
 
 import photo from "../images/fash_women1.jpg";
 
 class Profile extends Component {
   constructor(props) {
     super(props);
+    const userData = JSON.parse(localStorage.getItem("localData"));
     this.state = {
       modal2: false,
       radio: 2,
+      id: userData.user.id,
+      profileError: '',
       startDate: new Date(),
       password: '',
       imageUrl: ''
     }
-
-  }// nr represents modal number
-  toggle = (nr) => (e) => {
-    e.preventDefault();
+    this.changeHandler = this.changeHandler.bind(this);
+  }
+  
+  // nr represents modal number
+  toggle = (nr) => () => {
+    // e.preventDefault();
 
     if (nr === 2) {
       this.setState({
@@ -53,10 +59,90 @@ class Profile extends Component {
     // handle logic
     this.props.history.push("/Message");
   }
+  
+  changeHandler = (e) => {
+    // e.preventDefault();
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+  
+  toastUpdate = () => {
+    toast('update successful!');
+  }
+  
+  updateProfile = () => {
+    let tokenId = JSON.parse(localStorage.getItem("localData"));
+    const token = tokenId.user.token;
+    this.setState({
+      firstName: tokenId.user.firstName,
+      lastName: tokenId.user.lastName,
+      email: tokenId.user.email,
+      role: tokenId.user.role,
+    })
+    const id = tokenId.user.adminId ? tokenId.user.adminId : tokenId.user.userId;
+    // console.log(id);
+    
+    // if user is admin 
+    this.state.role === 'admin' ?
+    // update admin record
+    axios.put(`http://localhost:4000/api/auth/admin/updateAdmin/${id}`,
+    this.state,
+    { headers: {
+      "Authorization": `Bearer ${token}` }
+    })
+    .then(response => {
+      if(response.status === 201) {
+        this.toastUpdate();        
+        setTimeout(() => {
+        window.location.reload(true);            
+      }, 1000);
+      }
+      else {
+        this.setState({
+          profileError: true
+        });
+        console.log('In else. things broke.');
+      }
+    })
+    .catch(error => {
+      this.setState({
+        profileError: true
+      });
+      new Error(error);
+      console.log('In catch. things broke.');
+    }) :
+    // or else update user record
+    axios.put(`http://localhost:4000/api/auth/updateUser/${id}`,
+    this.state,
+    { headers: {
+      "Authorization": `Bearer ${token}` }
+    })
+    .then(response => {
+      if(response.status === 201) {
+        this.toastUpdate();        
+        setTimeout(() => {
+        window.location.reload(true);            
+      }, 1000);
+      }
+      else {
+        this.setState({
+          profileError: true
+        });
+        console.log('In else. things broke.');
+      }
+    })
+    .catch(error => {
+      this.setState({
+        profileError: true
+      });
+      new Error(error);
+      console.log('In catch. things broke.');
+    });
+  }
 
   render() {
     const userData = JSON.parse(localStorage.getItem("localData"));
-    console.log(userData);
     const { password, imageUrl } = this.state;
     
   return (
@@ -76,6 +162,14 @@ class Profile extends Component {
                     userData.user.userId}
                   </figcaption>
                 </figure>
+
+                <MDBBtn color="primary" size="50" onClick={this.toggle(2)}>
+                  <MDBIcon icon="user-edit" className="mr-1" /> Edit Profile
+                </MDBBtn>
+
+                {/* <a href="#" onClick={this.toggle(2)}>
+                  <small className="pb-2">Edit profile</small>
+                </a> */}
 
                 <MDBCardBody>
                   <h4 className="card-title">
@@ -115,10 +209,6 @@ class Profile extends Component {
                   </p>
                   <p><strong>Date of Birth</strong>: { userData.user.country }</p>
 
-                  <a href="#" onClick={this.toggle(2)}>
-                    <small className="pb-2">Edit profile</small>
-                  </a>
-
                   <MDBModal isOpen={this.state.modal2} toggle={this.toggle(2)} size="lg" cascading>
                     <MDBModalHeader
                       toggle={this.toggle(2)}
@@ -153,22 +243,22 @@ class Profile extends Component {
                           type="email"
                         /> */}
                         <MDBInput
-                          label="Your password"
+                          label="Enter new password"
                           name="password"
                           type="password"
                           iconClass="dark-grey"
-                          omChange={this.changeHandle}
+                          onChange={this.changeHandler}
                           value={password}
                         />
 
-                        <MDBInput
+                        {/* <MDBInput
                           label="Add imgae url"
                           name="imageUrl"
                           type="password"
                           iconClass="dark-grey"
                           omChange={this.changeHandle}
                           value={imageUrl}
-                        />
+                        /> */}
 
                         {/* <MDBInput
                           className="d-inline"
@@ -209,30 +299,23 @@ class Profile extends Component {
                           />
                         </fragment> */}
 
-                        <div className="input-group mb-4">
-                          <div className="input-group-prepend">
-                            <span className="input-group-text" id="inputGroupFileAddon01">
-                              Upload
-                            </span>
-                          </div>
-                          <div className="custom-file">
-                            <input
-                              type="file"
-                              className="custom-file-input"
-                              id="inputGroupFile01"
-                              aria-describedby="inputGroupFileAddon01"
-                            />
-                            <label className="custom-file-label" htmlFor="inputGroupFile01">
-                              Choose file
-                            </label>
-                          </div>
-                        </div>
+                        <input
+                          type="file"
+                          name="imageUrl"
+                          onChange={this.changeHandler}
+                          value={imageUrl} />
 
-                        <div className="text-center mt-1-half">
+                        <div className="text-center mt-2">
+                          {
+                            this.state.profileError === true ?
+                              <MDBAlert color="danger">
+                                <strong>Oops!</strong> Something went wrong.
+                              </MDBAlert> : null
+                          }
                           <MDBBtn
                             color="info"
                             className="mb-2"
-                            onClick={this.toggle(2)}
+                            onClick={this.updateProfile}
                           >
                             Submit
                             <MDBIcon icon="paper-plane" className="ml-1" />
@@ -246,6 +329,7 @@ class Profile extends Component {
 
               <MDBCol md="2" />
             </MDBCol>
+            <ToastContainer pauseOnFocusLoss={true} />
           </MDBRow>
         </div>
       </div>
