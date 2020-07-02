@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-import { MDBCard, MDBCardTitle, MDBBtn, MDBRow, MDBCol, MDBIcon, MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBModal, MDBModalBody, MDBModalHeader, MDBFormInline, MDBInput } from "mdbreact";
+import { MDBCard, MDBCardTitle, MDBBtn, MDBRow, MDBCol, MDBIcon, MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBModal, MDBModalBody, MDBModalHeader, MDBFormInline, MDBInput , MDBAlert} from "mdbreact";
 
 import axios from 'axios';
 import DatePicker from "react-datepicker";
@@ -16,7 +16,12 @@ import bgFashion from "../images/butterfly_bg.jpg";
 // Events UI
 class Events extends Component {
   constructor(props) {
-    super(props);
+    super(props);    
+    const userData = JSON.parse(localStorage.getItem("localData"));
+    const name = `${userData.user.firstName} ${userData.user.lastName}`;
+    const posterId = JSON.parse(localStorage.getItem("localData")).user.adminId ?
+    JSON.parse(localStorage.getItem("localData")).user.adminId :
+    JSON.parse(localStorage.getItem("localData")).user.userId;
     this.state = {
       events: [],
       modal1: false,
@@ -29,7 +34,8 @@ class Events extends Component {
       likeEvent: false,
       id: '',
       userId: '',
-      organizerId: '',
+      organizerId: posterId,
+      postedBy: name,
       sponsorId: '',
       title: '',
       description: '',
@@ -43,7 +49,10 @@ class Events extends Component {
       like: '',
       location: '',
       industry: '',
-      imageUrl: ''
+      eventsError: false,
+      createdDate: Date.now(),
+      // imageUrl: null,
+      // selectedFile: null
     };
     this.newEventSubmit = this.newEventSubmit.bind(this);
     this.changeHandler = this.changeHandler.bind(this);
@@ -91,10 +100,10 @@ class Events extends Component {
       });
     }
     // Modal. Add Event .
-    else if (nr === 5) {
+    else if (nr === 5) {      
       this.setState({
         modal5: !this.state.modal5
-      });
+        });
     }
     // Modal.Update Event .
     else if (nr === 6) {
@@ -103,15 +112,6 @@ class Events extends Component {
         modal6: !this.state.modal6
       });
     }
-  }
-  
-  // function for displaying Update Event form 
-  handleViewUpdate = (e, eventId) => {
-    e.preventDefault();
-    this.setState({
-      modal6: !this.state.modal6,
-      id: eventId._id
-    });
   }
   
   // function for event details view (UI)
@@ -171,7 +171,7 @@ class Events extends Component {
   }
   
   // date change function. nr represents toggle number for different date fields
-  handleDate = (nr, date) => () => {
+  handleDate = (nr, date , e) => () => {
     if (nr === 1) {
       this.setState({
         createdDate: date
@@ -193,14 +193,44 @@ class Events extends Component {
       });
     }
   }
-  
+
   // toaster function for showing alerts
   notify = () => {
     toast("You've successfully enrolled!");
   }
-  
+
   // function for displaying all events
   getEvents = () => {
+    this.setState({
+      events: [],
+      modal1: false,
+      modal2: false,
+      modal3: false,
+      modal4: false,
+      modal5: false,
+      modal6: false,
+      showDetailContainer: '',
+      likeEvent: false,
+      id: '',
+      userId: '',
+      sponsorId: '',
+      title: '',
+      description: '',
+      dueRegDate: new Date(),
+      startDate: new Date(),
+      endDate: new Date(),
+      targetAudience: '',
+      category: '',
+      amountToPay: '',
+      paymentDetail: '',
+      like: '',
+      location: '',
+      industry: '',
+      eventsError: false,
+      createdDate: null,
+      // imageUrl: null,
+      // selectedFile: null
+    });
     // fetch data here
     axios.get('https://betalife-backend.herokuapp.com/api/events')
     .then(response => {
@@ -219,59 +249,178 @@ class Events extends Component {
     })
     .catch( error => error );
   }
-  
+
   // function for capturing user input as they type
-  changeHandler = (e) => {
+  imgChangeHandler = (e) => {
     e.preventDefault();
-    this.setState({
-    [e.target.name]: e.target.value
-  });
-  }
-  
-  // submit function for Add Event form
-  newEventSubmit = (e) => {
-    e.preventDefault();        
-    axios.post('http://localhost:4000/api/events', this.state)
-    .then(response => {
-      console.log(response);
-      if(response.status === 201) {
-      }
-      else {
-        alert("could not post data");
-      }
-    this.getEvents();
-    this.setState({
-      modal5: false
-    });
-  })
-    .catch( error => error );
-  }
-  
-  // submit function for Update Event form
-  updateEventSubmit = (e) => {
-    e.preventDefault();
-    const id = this.state.id;
-    console.log(id);
-  // axios.put(`http://localhost:4000/api/events/...
-  }
-  
-  //  delete Event function
-  deleteEvent = (e, eventId) => {
-    e.preventDefault();
-    // // const id = this.state.id;
-    // this.setState({ id: eventId.id})
-    // axios.delete('api/events', {data: {id: this.state.id}})
-    // .then((response) => {
-    //   console.log("event deleted!");
-    // })
-    // .catch((error) => {
-    //   console.error(error);
+    // this.setState({
+    // // selectedFile: e.target.files[0],
+    // imageUrl: e.target.files[0],
+    // loaded: 0
     // });
   }
 
+  // function for capturing user input as they type
+  changeHandler = (e) => {
+    // e.preventDefault();
+    // console.log(e.target.files[0]);
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
+  toastEventDelete = () => {
+    toast("Event deleted successfully!");
+  }
+
+  //  delete Event function
+  deleteEvent = (e, eventId) => {
+    e.preventDefault();
+    console.log(eventId._id);
+    let tokenId = JSON.parse(localStorage.getItem("localData"));
+    const token = tokenId.user.token;    
+    axios.delete(`https://betalife-backend.herokuapp.com/api/events/${eventId._id}`, {
+      headers: {
+          "Authorization": `Bearer ${token}`          
+      }
+    })
+    .then(response => {
+      if(response.status === 200) {
+        this.setState({
+          eventsError: false
+        }); 
+        this.toastEventDelete();
+        setTimeout(() => {
+          this.getEvents();            
+        }, 2000);
+      }
+      else {
+        this.setState({
+            eventsError: true            
+        })
+      }
+    })
+    .catch( error => {
+      console.log(error);      
+      new Error(error);
+      this.setState({
+          eventsError: true
+      });
+    });
+  }
+
+  // function for displaying Update Event form 
+  handleViewUpdate = (e, eventId) => {
+    // e.preventDefault();
+    // this.toggle(6);
+    this.setState({
+      modal6: !this.state.modal6,
+      id: eventId._id,
+      title: eventId.title,
+      description: eventId.description,
+      dueRegDate: eventId.dueRegDate,
+      startDate: eventId.startDate,
+      endDate: eventId.endDate,
+      targetAudience: eventId.targetAudience,
+      category: eventId.category,
+      amountToPay: eventId.amountToPay,
+      paymentDetail: eventId.paymentDetail,
+      like: eventId.like,
+      location: eventId.location,
+      industry: eventId.Industry,
+      createdDate: new Date()
+    });
+  }
+
+  toastEventUpdate = () => {
+    toast("Event updated successfully!");
+  }
+
+  // submit function for Update Event form
+  updateEventSubmit = (e) => {
+    e.preventDefault();
+    let tokenId = JSON.parse(localStorage.getItem("localData"));
+    const token = tokenId.user.token;    
+    axios.put(`https://betalife-backend.herokuapp.com/api/events/${this.state.id}`, this.state, {
+      headers: {
+          "Authorization": `Bearer ${token}`          
+      }
+    })
+    .then(response => {
+      console.log(response);
+      if(response.status === 201) {
+        this.toastEventUpdate();
+        setTimeout(() => {
+          this.setState({
+              eventsError: false,
+              modal6: !this.state.modal6
+          })            
+        }, 1000)
+          // window.location.reload(true);
+      }
+      else {
+        this.setState({
+            eventsError: true,
+        })
+      }
+      window.location.reload(true);
+      // this.getEvents();
+      // this.setState({
+      //   modal5: false
+      // });
+    })
+    .catch( error => {
+      this.setState({
+          eventsError: true,
+      })
+      new Error(error) 
+    });
+  }
+
+  // Toast  signup successful
+  toastEventPost = () => {
+    toast("Event created successful!");
+  }
+
+  // submit function for Add Event form
+  newEventSubmit = (e) => {
+    e.preventDefault();
+    let tokenId = JSON.parse(localStorage.getItem("localData"));
+    const token = tokenId.user.token; 
+    axios.post('https://betalife-backend.herokuapp.com/api/events', this.state, {
+      headers: {
+        "Authorization": `Bearer ${token}`          
+      }
+    })
+    .then(response => {
+      console.log(response);
+      if(response.status === 201) {
+        this.setState({
+          eventsError: false
+        })
+        this.toastEventPost()
+      }
+      else {
+        this.setState({
+          eventsError: true,
+        })
+      }
+      this.getEvents();
+      this.setState({
+        modal5: false
+      });
+    })
+    .catch( error => {
+      this.setState({
+        eventsError: true,
+      })
+      new Error(error) 
+    });
+  }
+
   render(){
-    const dueDateMin = new Date(Date.now() + (86400000 * 3));
-  const eventDetailsProp2 = this.state.showDetailContainer;
+    // const dueDateMin = new Date(Date.now() + (86400000 * 3));
+    const eventDetailsProp2 = this.state.showDetailContainer;
     const {events} = this.state;
     const { id, title, description, dueRegDate, startDate, endDate, targetAudience, category, payAmount, paymentDetail, location, industry, imageUrl } = this.state;
     return (
@@ -279,14 +428,18 @@ class Events extends Component {
         <div className="row mt-4 pt-5">
           <div className="col-12 mb-4">
             <h1 className="text-center float-left">All Events</h1>
-            <MDBBtn
-              color="primary"
-              className="float-right"
-              onClick={this.toggle(5)}
-            >
-              <MDBIcon icon="calendar-check" onClick={this.toggle(5)} className="mr-2" />
-              Add Event
-            </MDBBtn>
+            {console.log(JSON.parse(localStorage.getItem("localData")).user.role)}
+            {/* Restrict display of Add Event button to Admin or Organizer */}
+            { JSON.parse(localStorage.getItem("localData")).user.role === 'admin' || JSON.parse(localStorage.getItem("localData")).user.role === 'organizer' ?
+              <MDBBtn
+                color="primary"
+                className="float-right"
+                onClick={this.toggle(5)}
+              >
+                <MDBIcon icon="calendar-check" onClick={this.toggle(5)} className="mr-2" />
+                Add Event
+              </MDBBtn> : null
+            }
             <MDBDropdown className="float-right">
               <MDBDropdownToggle caret color="primary">
                 Filter by
@@ -319,9 +472,8 @@ class Events extends Component {
                 <div className="text-white text-center d-flex align-items-center rgba-black-strong py-2 px-4">
                   <div className="w-100">
                     <h5 className="light-blue-text pt-2">
-                      <MDBIcon icon="chart-pie" className="capitalize" /> 
-                      { event.industry.length > 31 ?
-                        event.industry.substr(0, 31-1) + '...' : event.industry }
+                      <MDBIcon icon="chart-pie" className="capitalize" />
+                      {event.industry}
                     </h5>
                     <MDBCardTitle tag="h3" className="pt-2">
                       <strong>
@@ -335,7 +487,8 @@ class Events extends Component {
                       { event.description.length > 60 ?
                         event.description.substr(0, 60-1) + '...' : event.description }
                     </p>
-                    <a href="#"><h6> {event.organizerId} </h6></a>
+                    <a href="#">
+                      <h6> Posted by {event.postedBy} </h6></a>
 
                     <MDBBtn color="primary" onClick={ (e) => {
                       const detailContainer = event;
@@ -354,33 +507,36 @@ class Events extends Component {
                       <MDBIcon far icon="clock" /> Last updated {event.createdDate}
                     </li>
 
-                    {/* delete event button */}
-                    <li className="list-inline-item float-right pr-1">
-                      <a href="#" className="white-text" onClick={(e) => {
-                        const eventId = event;
-                        return (
-                          this.deleteEvent(e, eventId)
-                        )}}>  
-                        <MDBIcon far icon="trash-alt" />
-                      </a>
-                    </li>
+                    {/* delete event button.  Display restricted to Admin */}
+                    { JSON.parse(localStorage.getItem("localData")).role === "admin" ?
+                      <li className="list-inline-item float-right pr-1">
+                        <a href="#" className="white-text" onClick={(e) => {
+                          const eventId = event;
+                          return (
+                            this.deleteEvent(e, eventId)
+                          )}}>  
+                          <MDBIcon far icon="trash-alt" />
+                        </a>
+                      </li>  : null }
 
-                    {/* update event button */}
-                    <li className="list-inline-item float-right pr-1">
-                      <a href="#" className="white-text" onClick={(e) => {
-                        const eventId = event;
-                        return (
-                          this.handleViewUpdate(e, eventId)
-                        )}}>                      
-                        <MDBIcon far icon="edit" />
-                      </a>
-                    </li>
+                    {/* update event button. Display restricted to Event creator */}
+                    { this.state.organizerId === event.organizerId ?
+                      <li className="list-inline-item float-right pr-1">
+                        <a href="#" className="white-text" onClick={(e) => {
+                          const eventId = event;
+                          return (
+                            this.handleViewUpdate(e, eventId)
+                          )}}>                      
+                          <MDBIcon far icon="edit" />
+                        </a>
+                      </li> : null
+                    }
 
                     {/* share button */}
                     <li className="list-inline-item pl-2 float-right">
                       <a href="#!" className="white-text">
                         <MDBIcon icon="share-alt" className="mr-2" />
-                        Share
+                        {/* Share */}
                       </a>
                     </li>
 
@@ -563,28 +719,59 @@ class Events extends Component {
                       />
                   </MDBFormInline> */}
                   <MDBFormInline className="my-4">
-                    <label className="mr-2">Registration due date</label>
-                    <DatePicker anme="dueRegDate" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
+                    Due Registration Date: 
+                    <input
+                      className="ml-2"
+                      name="dueRegDate"
+                      type="date"
+                      min={new Date()}
+                      max="2031-12-31"
+                      onChange={this.changeHandler}
+                      value={dueRegDate}
+                    />
+
+                    {/* <label className="mr-2">Registration due date</label>
+                      <DatePicker anme="dueRegDate" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
                       selected={dueRegDate}
                       onSelect={this.handleDateSelect(2)}
                       omChange={this.handleDate(2)}
-                    />
+                    /> */}
                   </MDBFormInline>
                   <MDBFormInline className="my-4">
-                    <label className="mr-2">Start Date</label>
-                    <DatePicker anme="startDate" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
+                    Start Date: 
+                    <input
+                      className="ml-2"
+                      name="startDate"
+                      type="date"
+                      min={new Date()}
+                      max="2031-12-31"
+                      onChange={this.changeHandler}
+                      value={startDate}
+                    />
+                    {/* <label className="mr-2">Start Date</label>
+                      <DatePicker anme="startDate" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
                       selected={startDate}
                       onSelect={this.handleDateSelect(3)}
                       omChange={this.handleDate(3)}
-                    />
+                    /> */}
                   </MDBFormInline>
                   <MDBFormInline className="my-4">
-                    <label className="mr-2">End date</label>
-                    <DatePicker anme="endDate" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
+                    End Date: 
+                    <input
+                      className="ml-2"
+                      name="endDate"
+                      type="date"
+                      min={new Date()}
+                      max="2030-12-31"
+                      onChange={this.changeHandler}
+                      value={endDate}
+                    />
+                    {/* <label className="mr-2">End date</label>
+                      <DatePicker anme="endDate" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
                       selected={endDate}
                       onSelect={this.handleDateSelect(4)}
                       omChange={this.handleDate(4)}
-                    />
+                    /> */}
                   </MDBFormInline>
                   <MDBInput
                     label="Taget audience"
@@ -661,18 +848,30 @@ class Events extends Component {
                     onChange={this.changeHandler}
                     value={industry}
                   />
-                  <MDBInput
+                  <input
+                    type="file"
+                    name="imageUrl"
+                    onChange={this.imgChangeHandler}
+                    // value={imageUrl}
+                  />
+                  {/* <input
                     className="d-inline"
                     label="Image Url"
                     name="imageUrl"
-                    type="text"
+                    type="file"
                     placeholder="https://"
                     iconClass="dark-grey"
                     onChange={this.changeHandler}
                     value={imageUrl}
-                  />
+                  /> */}
 
                   <div className="text-center mt-1-half">
+                    {
+                      this.state.eventsError === true ?
+                        <MDBAlert color="danger" className="mt-3">
+                          <strong>Oops!</strong> Something went wrong.
+                        </MDBAlert> : null
+                    }
                     <MDBBtn
                       color="info"
                       type ="submit"
@@ -693,8 +892,9 @@ class Events extends Component {
               toggle={this.toggle(6)}
               titleClass="d-inline title"
               className="text-center light-blue darken-3 white-text"
-            ><MDBIcon />
+            >
               <MDBIcon icon="calendar-check" className="px-3" />
+              Update Event
             </MDBModalHeader>
             <MDBModalBody>
               <div className="text-left">
@@ -725,28 +925,60 @@ class Events extends Component {
                     value={description}
                   />
                   <MDBFormInline className="my-4">
-                    <label className="mr-2">Registration due date</label>
-                    <DatePicker anme="dueRegDate" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
+                    Due Registration Date: 
+                    <input
+                      className="ml-2"
+                      name="dueRegDate"
+                      type="date"
+                      min={new Date()}
+                      max="2031-12-31"
+                      onChange={this.changeHandler}
+                      value={dueRegDate}
+                    />
+
+                    {/* <label className="mr-2">Registration due date</label>
+                      <DatePicker name="dueRegDate" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
                       selected={dueRegDate}
                       onSelect={this.handleDateSelect(2)}
-                      omChange={this.handleDate(2)}
-                    />
+                      onChange={this.handleDate(2)}
+                    /> */}
                   </MDBFormInline>
                   <MDBFormInline className="my-4">
-                    <label className="mr-2">Start Date</label>
-                    <DatePicker anme="startDate" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
+                    Start Date: 
+                    <input
+                      className="ml-2"
+                      name="startDate"
+                      type="date"
+                      min={new Date()}
+                      max="2031-12-31"
+                      onChange={this.changeHandler}
+                      value={startDate}
+                    />
+
+                    {/* <label className="mr-2">Start Date</label>
+                      <DatePicker name="startDate" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
                       selected={startDate}
                       onSelect={this.handleDateSelect(3)}
-                      omChange={this.handleDate(3)}
-                    />
+                      onChange={this.handleDate(3)}
+                    /> */}
                   </MDBFormInline>
                   <MDBFormInline className="my-4">
-                    <label className="mr-2">End date</label>
-                    <DatePicker anme="endDate" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
+                    End Date: 
+                    <input
+                      className="ml-2"
+                      name="endDate"
+                      type="date"
+                      min={new Date()}
+                      max="2030-12-31"
+                      onChange={this.changeHandler}
+                      value={endDate}
+                    />
+                    {/* <label className="mr-2">End date</label>
+                      <DatePicker name="endDate" className="border border-top-0 border-left-0 border-right-0 border-bottom border-dark-grey pb-1"
                       selected={endDate}
                       onSelect={this.handleDateSelect(4)}
-                      omChange={this.handleDate(4)}
-                    />
+                      onChange={this.handleDate(4)}
+                    /> */}
                   </MDBFormInline>
                   <MDBInput
                     label="Taget audience"

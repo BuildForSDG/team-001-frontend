@@ -34,7 +34,7 @@ class Signup extends Component {
       city: '',
       doBirth: new Date(),
       sex: 'female',
-      photo: ''
+      imageUrl: ''
     };
     this.handleLogin = this.handleLogin.bind(this);
   }
@@ -197,7 +197,7 @@ class Signup extends Component {
       city,
       doBirth,
       sex,
-      photo } = this.state;
+      imageUrl } = this.state;
     return (
       <div>
         <MDBView src={loginBg}>
@@ -385,6 +385,12 @@ class Signup extends Component {
                           containerClass="mr-3"
                         />
                       </fragment>
+                      
+                      <input
+                        type="file"
+                        name="imageUrl"
+                        onChange={this.changeHandler}
+                        value={imageUrl} />
 
                       {/* <div className="input-group mb-4">
                         <div className="input-group-prepend">
@@ -394,7 +400,7 @@ class Signup extends Component {
                         </div>
                         <div className="custom-file">
                         <input
-                        name="photo"
+                        name="imageUrl"
                         type="file"
                         className="custom-file-input"
                         id="inputGroupFile01"
